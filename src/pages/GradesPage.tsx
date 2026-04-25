@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BookOpen, GraduationCap, School, Microscope, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { cn } from '../lib/utils';
 
 const GradesPage: React.FC = () => {
   const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
@@ -27,13 +28,13 @@ const GradesPage: React.FC = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
-            className="space-y-12"
+            className="space-y-12 pb-20"
           >
             <header>
-              <h1 className="text-4xl md:text-6xl font-display font-black text-white uppercase tracking-tighter mb-4 italic">
-                Grade-wise Learning
+              <h1 className="text-4xl md:text-6xl font-display font-black text-slate-900 tracking-tight mb-4 leading-none uppercase">
+                Grade-wise <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Learning</span>
               </h1>
-              <p className="text-lg text-slate-400 font-medium max-w-2xl">
+              <p className="text-lg text-slate-500 font-medium max-w-2xl">
                 Select your current grade to access curated content, syllabus-specific notes, and practice materials.
               </p>
             </header>
@@ -43,16 +44,16 @@ const GradesPage: React.FC = () => {
                 <div 
                   key={group.id} 
                   onClick={() => setSelectedGrade(group.id)}
-                  className="glass-panel p-8 hover-lift cursor-pointer text-center group flex flex-col items-center gap-6"
+                  className="vibrant-card p-8 hover-lift cursor-pointer text-center group flex flex-col items-center gap-6 shadow-sm"
                 >
-                  <div className={`w-20 h-20 rounded-3xl ${group.bg} flex items-center justify-center text-5xl shadow-inner border border-white/5 group-hover:scale-110 transition-transform`}>
+                  <div className={`w-20 h-20 rounded-3xl ${group.bg} flex items-center justify-center text-5xl shadow-sm border border-slate-50 group-hover:scale-110 transition-transform`}>
                     {group.icon}
                   </div>
                   <div>
-                    <h3 className="text-xl font-black text-white uppercase tracking-tight">{group.label}</h3>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">{group.sub}</p>
+                    <h3 className="text-xl font-bold text-slate-900 tracking-tight">{group.label}</h3>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{group.sub}</p>
                   </div>
-                  <button className={`w-full h-12 ${group.bg} ${group.color} rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-opacity-20 transition-all mt-auto`}>
+                  <button className={`w-full h-12 bg-slate-50 ${group.color} rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-slate-100 transition-all mt-auto border border-slate-100 shadow-sm`}>
                     Explore →
                   </button>
                 </div>
@@ -65,44 +66,51 @@ const GradesPage: React.FC = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="space-y-12"
+            className="space-y-12 pb-20"
           >
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
               <div>
                 <button 
                   onClick={() => setSelectedGrade(null)} 
-                  className="flex items-center gap-2 text-indigo-400 hover:text-white transition-colors mb-6 text-xs font-black uppercase tracking-widest"
+                  className="flex items-center gap-2 text-primary hover:text-secondary transition-colors mb-6 text-xs font-bold uppercase tracking-widest"
                 >
                   <ArrowLeft size={16} />
                   Back to Grades
                 </button>
-                <h2 className="text-4xl md:text-6xl font-display font-black text-white uppercase tracking-tighter italic">Grade 11-12</h2>
-                <p className="text-lg text-slate-400 font-medium mt-2">Select your stream of study</p>
+                <h2 className="text-4xl md:text-6xl font-display font-black text-slate-900 tracking-tight leading-none uppercase">Grade 11-12</h2>
+                <p className="text-lg text-slate-500 font-medium mt-2">Select your stream of study</p>
               </div>
-              <div className="glass-panel p-4 flex gap-4 bg-white/5 border-white/10">
-                <p className="text-xs font-black text-slate-500 uppercase tracking-widest self-center mr-4">Select Board:</p>
-                <button className="px-6 py-2.5 bg-indigo-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-indigo-600/20">CBSE</button>
-                <button className="px-6 py-2.5 bg-white/5 text-slate-400 hover:bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest">ICSE</button>
-                <button className="px-6 py-2.5 bg-white/5 text-slate-400 hover:bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest">State Board</button>
+              <div className="vibrant-card p-4 flex flex-wrap gap-4 bg-white border border-slate-100 shadow-sm">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest self-center mr-4">Select Board:</p>
+                <button className="btn-primary px-6 py-2.5 text-[10px]">CBSE</button>
+                <button className="btn-secondary px-6 py-2.5 text-[10px]">ICSE</button>
+                <button className="btn-secondary px-6 py-2.5 text-[10px]">State Board</button>
               </div>
             </header>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {streams.map((stream, i) => (
-                <div key={i} className={`glass-panel p-8 hover-lift cursor-pointer border-t-4 ${stream.color} flex flex-col gap-6 group`}>
-                  <h3 className="text-2xl font-black text-white uppercase tracking-tight italic">{stream.title}</h3>
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest leading-relaxed">Includes: {stream.desc}</p>
+                <div key={i} className={cn(
+                  "vibrant-card p-8 hover-lift cursor-pointer border-t-4 flex flex-col gap-6 group shadow-sm",
+                  stream.color === 'border-indigo-500' ? 'border-primary' :
+                  stream.color === 'border-cyan-500' ? 'border-cyan-500' : 'border-purple-500'
+                )}>
+                  <h3 className="text-2xl font-black text-slate-900 tracking-tight uppercase">{stream.title}</h3>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest leading-relaxed">Includes: {stream.desc}</p>
                   
                   <div className="space-y-4">
                     {stream.items.map((item, j) => (
-                      <div key={j} className="flex items-center gap-4 text-sm font-bold text-slate-400 group-hover:text-slate-200 transition-colors">
-                        <CheckCircle2 size={18} className={stream.color.replace('border-', 'text-')} />
+                      <div key={j} className="flex items-center gap-4 text-sm font-bold text-slate-500 transition-colors">
+                        <CheckCircle2 size={18} className={cn(
+                          stream.color === 'border-indigo-500' ? 'text-primary' :
+                          stream.color === 'border-cyan-500' ? 'text-cyan-500' : 'text-purple-500'
+                        )} />
                         {item}
                       </div>
                     ))}
                   </div>
 
-                  <button className={`w-full h-14 bg-white/5 hover:bg-white/10 rounded-xl font-black text-xs uppercase tracking-widest transition-all mt-auto border border-white/5 group-hover:border-white/20`}>
+                  <button className="btn-secondary w-full h-14 text-xs mt-auto">
                     Select Stream →
                   </button>
                 </div>

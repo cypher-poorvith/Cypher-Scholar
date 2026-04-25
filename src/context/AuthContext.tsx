@@ -1,79 +1,142 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { UserProfile, UserRole } from '../types';
 import { useToast } from './ToastContext';
+import { supabase } from '../lib/supabase';
+import { User, Session } from '@supabase/supabase-js';
 
 interface AuthContextType {
-  user: any | null;
+  user: User | null;
   profile: UserProfile | null;
   loading: boolean;
   isAdmin: boolean;
   isEditor: boolean;
-  logout: () => Promise<void>;
+  role: UserRole | null;
+  effectiveRole: UserRole | null;
+  setEffectiveRole: (role: UserRole) => void;
+  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, displayName: string) => Promise<{ error: any, data: any }>;
+  signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error: any }>;
   logAudit: (action: string, target: string, type: 'user' | 'content' | 'test' | 'system', targetId: string, before?: any, after?: any) => Promise<void>;
-  viewMode: 'student' | 'editor' | 'admin';
-  setViewMode: React.Dispatch<React.SetStateAction<'student' | 'editor' | 'admin'>>;
 }
 
-const AuthContext = createContext<AuthContextType>({
-  user: null,
-  profile: null,
-  loading: true,
-  isAdmin: false,
-  isEditor: false,
-  logout: async () => {},
-  logAudit: async () => {},
-  viewMode: 'student',
-  setViewMode: () => {},
-});
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
+  return context;
+};
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { showToast } = useToast();
+  const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [viewMode, setViewMode] = useState<'student' | 'editor' | 'admin'>(
-    (localStorage.getItem('cypher_view_mode') as any) || 'student'
-  );
+  const [effectiveRole, setEffectiveRoleState] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Initialize viewMode/effectiveRole from localStorage if it exists
   useEffect(() => {
-    localStorage.setItem('cypher_view_mode', viewMode);
-  }, [viewMode]);
-
-  const checkAuth = async () => {
-    try {
-      const response = await fetch('/api/auth/me');
-      if (response.ok) {
-        const data = await response.json();
-        setProfile(data.user);
-        
-        // Set initial viewMode based on role
-        if (data.user.role === UserRole.SUPERADMIN) setViewMode('admin');
-        else if (data.user.role === UserRole.EDITOR) setViewMode('editor');
-        else setViewMode('student');
-      } else {
-        setProfile(null);
-        setViewMode('student');
-      }
-    } catch (error) {
-      console.error("Auth check error:", error);
-    } finally {
-      setLoading(false);
+    const savedRole = localStorage.getItem('cypher_effective_role') as UserRole;
+    if (savedRole && Object.values(UserRole).includes(savedRole)) {
+      setEffectiveRoleState(savedRole);
     }
+  }, []);
+
+  const setEffectiveRole = (role: UserRole) => {
+    setEffectiveRoleState(role);
+    localStorage.setItem('cypher_effective_role', role);
+  };
+
+  const fetchProfile = async (uid: string) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', uid)
+      .single();
+
+    if (error) {
+      console.error('Error fetching profile:', error);
+      // In case of race condition during signup, profile might not be created yet by trigger
+      return null;
+    }
+    return data as UserProfile;
   };
 
   useEffect(() => {
-    checkAuth();
+    // Check active sessions and subscribe to auth changes
+    const initAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session) {
+        setUser(session.user);
+        const userProfile = await fetchProfile(session.user.id);
+        setProfile(userProfile);
+        
+        // If no effective role set, use the real role
+        if (!localStorage.getItem('cypher_effective_role') && userProfile) {
+          setEffectiveRole(userProfile.role);
+        }
+      } else {
+        setUser(null);
+        setProfile(null);
+        setEffectiveRoleState(null);
+      }
+      setLoading(false);
+    };
+
+    initAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session) {
+        setUser(session.user);
+        const userProfile = await fetchProfile(session.user.id);
+        setProfile(userProfile);
+        
+        if (!localStorage.getItem('cypher_effective_role') && userProfile) {
+          setEffectiveRole(userProfile.role);
+        }
+      } else {
+        setUser(null);
+        setProfile(null);
+        setEffectiveRoleState(null);
+        localStorage.removeItem('cypher_effective_role');
+      }
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const isAdmin = profile?.role === UserRole.SUPERADMIN;
-  const isEditor = profile?.role === UserRole.EDITOR || isAdmin;
+  const signIn = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      // Specific error messages handling is usually done in the component
+      // but we return the raw error here.
+      return { error };
+    }
+    return { error: null };
+  };
 
-  const logout = async () => {
+  const signUp = async (email: string, password: string, displayName: string) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          display_name: displayName,
+        },
+      },
+    });
+
+    return { error, data };
+  };
+
+  const signOut = async () => {
     setLoading(true);
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-      setProfile(null);
+      await supabase.auth.signOut();
+      localStorage.removeItem('cypher_effective_role');
       showToast("Logged out successfully", "success");
     } catch (err) {
       console.error("Logout error:", err);
@@ -82,13 +145,49 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const logAudit = async (action: string, target: string, type: 'user' | 'content' | 'test' | 'system', targetId: string, before?: any, after?: any) => {
-    // Audit logging can be moved to backend entirely later
-    console.log("Audit:", { action, target, type, targetId });
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    return { error };
   };
 
+  const logAudit = async (action: string, target: string, type: 'user' | 'content' | 'test' | 'system', targetId: string, before?: any, after?: any) => {
+    if (!user) return;
+    
+    await supabase.from('audit_logs').insert({
+      user_id: user.id,
+      user_name: profile?.displayName || user.email,
+      user_role: profile?.role || UserRole.STUDENT,
+      action,
+      target_type: type,
+      target_id: targetId,
+      target_name: target,
+      timestamp: Date.now(),
+      before,
+      after
+    });
+  };
+
+  const isAdmin = profile?.role === UserRole.SUPERADMIN;
+  const isEditor = profile?.role === UserRole.EDITOR || isAdmin;
+
   return (
-    <AuthContext.Provider value={{ user: profile, profile, loading, isAdmin, isEditor, logout, logAudit, viewMode, setViewMode } as any}>
+    <AuthContext.Provider value={{ 
+      user, 
+      profile, 
+      loading, 
+      isAdmin, 
+      isEditor, 
+      role: profile?.role || null,
+      effectiveRole,
+      setEffectiveRole,
+      signIn,
+      signUp,
+      signOut,
+      resetPassword,
+      logAudit 
+    }}>
       {children}
     </AuthContext.Provider>
   );

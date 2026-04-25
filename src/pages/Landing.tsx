@@ -111,24 +111,24 @@ const Landing: React.FC = () => {
   const { user, profile } = useAuth();
 
   const subjects = [
-    { name: "Physics", icon: <Brain />, color: "text-indigo-400" },
-    { name: "Chemistry", icon: <Sparkles />, color: "text-emerald-400" },
-    { name: "Math", icon: <Layers />, color: "text-cyan-400" },
-    { name: "Biology", icon: <Library />, color: "text-rose-400" },
+    { name: "Physics", icon: <Brain />, color: "text-blue-500" },
+    { name: "Chemistry", icon: <Sparkles />, color: "text-green-500" },
+    { name: "Math", icon: <Layers />, color: "text-violet-500" },
+    { name: "Biology", icon: <Library />, color: "text-orange-500" },
   ];
 
   const exams = [
-    { name: "JEE Main", type: "Engineering", color: "from-indigo-500/20 to-indigo-600/20" },
-    { name: "NEET", type: "Medical", color: "from-rose-500/20 to-rose-600/20" },
-    { name: "UPSC", type: "Civil Services", color: "from-amber-500/20 to-amber-600/20" },
+    { name: "JEE Main", type: "Engineering", color: "from-blue-50 to-indigo-50 border-blue-100", textColor: "text-blue-900" },
+    { name: "NEET", type: "Medical", color: "from-rose-50 to-pink-50 border-rose-100", textColor: "text-rose-900" },
+    { name: "UPSC", type: "Civil Services", color: "from-amber-50 to-yellow-50 border-amber-100", textColor: "text-amber-900" },
   ];
 
   return (
-    <div ref={scrollRef} className="flex flex-col relative w-full overflow-x-hidden bg-[#0A0817]">
+    <div ref={scrollRef} className="flex flex-col relative w-full overflow-x-hidden bg-slate-50">
       {/* Background Atmosphere */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 right-0 w-[80vw] h-[80vh] bg-indigo-600/5 blur-[120px] rounded-full" />
-        <div className="absolute bottom-0 left-0 w-[60vw] h-[60vh] bg-purple-600/5 blur-[120px] rounded-full" />
+        <div className="absolute top-0 right-0 w-[80vw] h-[80vh] bg-primary/5 blur-[120px] rounded-full" />
+        <div className="absolute bottom-0 left-0 w-[60vw] h-[60vh] bg-secondary/5 blur-[120px] rounded-full" />
       </div>
 
       {/* Hero Section */}
@@ -139,24 +139,24 @@ const Landing: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             className="max-w-5xl mx-auto"
           >
-            <h1 className="text-6xl md:text-[8rem] font-sans font-black tracking-tighter mb-8 text-white uppercase leading-[0.85]">
-              Master Every<br/>Subject, Ace<br/><span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/20">Every Exam</span>
+            <h1 className="text-6xl md:text-[8rem] font-display font-black tracking-tighter mb-8 text-slate-900 leading-[0.85]">
+              Master Every<br/>Subject, Ace<br/><span className="text-primary italic">Every Exam</span>
             </h1>
             
-            <p className="max-w-2xl mx-auto text-xl text-slate-400 mb-12 font-medium">
-              Free, comprehensive learning resources designed to help you understand complex topics visualized through modern interactive learning.
+            <p className="max-w-2xl mx-auto text-xl text-slate-500 mb-12 font-medium">
+              Comprehensive learning resources designed to help you understand complex topics visualized through modern interactive learning.
             </p>
             
             <div className="flex flex-wrap items-center justify-center gap-6">
               <Link to="/signup">
-                <button className="h-16 px-12 bg-indigo-600 text-white rounded-full font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3 hover:scale-105 transition-all shadow-xl shadow-indigo-600/20">
+                <button className="h-16 px-12 btn-primary flex items-center gap-3">
                   Get Started Free
                   <ArrowRight size={20} />
                 </button>
               </Link>
               
               <Link to="/subjects/all">
-                <button className="h-16 px-12 bg-white/5 border border-white/10 text-white rounded-full font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3 hover:bg-white/10 transition-all">
+                <button className="h-16 px-12 btn-outline flex items-center gap-3">
                   Browse Subjects
                 </button>
               </Link>
@@ -168,16 +168,16 @@ const Landing: React.FC = () => {
             animate={{ opacity: 1, scale: 1 }}
             className="max-w-4xl mx-auto"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-8">
-              Welcome back, {profile?.displayName || user?.displayName || 'Scholar'}
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full text-[10px] font-bold text-primary uppercase tracking-widest mb-8">
+              Welcome back, {profile?.displayName || 'Scholar'}
             </div>
             
-            <h1 className="text-6xl md:text-8xl font-display font-black text-white uppercase tracking-tighter mb-8 leading-[0.9]">
+            <h1 className="text-6xl md:text-8xl font-display font-black text-slate-900 uppercase tracking-tighter mb-8 leading-[0.9]">
               Let's continue your learning journey
             </h1>
             
             <Link to="/dashboard">
-              <button className="h-20 px-16 bg-white text-[#0A0817] rounded-full font-black text-xl uppercase tracking-widest flex items-center gap-4 hover:scale-105 transition-all shadow-2xl">
+              <button className="h-20 px-16 btn-primary rounded-full text-xl flex items-center gap-4">
                 Resume Learning
                 <Play size={24} fill="currentColor" />
               </button>
@@ -190,10 +190,10 @@ const Landing: React.FC = () => {
                 { label: 'Time', val: '24h', icon: <Clock size={16} /> },
                 { label: 'Solved', val: '456 Qs', icon: <Brain size={16} /> },
               ].map((stat, i) => (
-                <div key={i} className="p-6 rounded-3xl bg-white/5 border border-white/10 text-left group hover:border-indigo-500/30 transition-colors">
-                  <div className="text-indigo-400 mb-3">{stat.icon}</div>
-                  <p className="text-2xl font-black text-white leading-none">{stat.val}</p>
-                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2">{stat.label}</p>
+                <div key={i} className="vibrant-card p-6 text-left group">
+                  <div className="text-primary mb-3">{stat.icon}</div>
+                  <p className="text-2xl font-black text-slate-900 leading-none">{stat.val}</p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">{stat.label}</p>
                 </div>
               ))}
             </div>
@@ -202,17 +202,17 @@ const Landing: React.FC = () => {
       </section>
 
       {/* Popular Subjects */}
-      <section className="py-24 px-6 border-y border-white/5 bg-white/[0.01]">
+      <section className="py-24 px-6 border-y border-slate-100 bg-white shadow-sm relative z-10">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-xs font-black text-slate-500 uppercase tracking-[0.4em] mb-12 text-center">Popular Learning Domains</h2>
+          <h2 className="text-xs font-bold text-slate-400 uppercase tracking-[0.4em] mb-12 text-center">Popular Learning Domains</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {subjects.map((sub, i) => (
               <Link to={`/subjects/${sub.name.toLowerCase()}`} key={i}>
-                <div className="glass-panel p-8 text-center border-white/5 hover:border-indigo-500/30 group transition-all">
-                  <div className={`w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/5 flex items-center justify-center ${sub.color} group-hover:scale-110 transition-transform`}>
+                <div className="vibrant-card p-8 text-center group">
+                  <div className={`w-16 h-16 mx-auto mb-6 rounded-2xl bg-slate-50 flex items-center justify-center ${sub.color} group-hover:scale-110 transition-transform`}>
                     {React.cloneElement(sub.icon as React.ReactElement<any>, { size: 32 })}
                   </div>
-                  <h3 className="text-xl font-black text-white uppercase tracking-tight">{sub.name}</h3>
+                  <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight">{sub.name}</h3>
                 </div>
               </Link>
             ))}
@@ -221,17 +221,17 @@ const Landing: React.FC = () => {
       </section>
 
       {/* Popular Exams */}
-      <section className="py-24 px-6">
+      <section className="py-24 px-6 relative z-10">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-xs font-black text-slate-500 uppercase tracking-[0.4em] mb-12 text-center">Exam Specific Prep</h2>
+          <h2 className="text-xs font-bold text-slate-400 uppercase tracking-[0.4em] mb-12 text-center">Exam Specific Prep</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {exams.map((exam, i) => (
-              <div key={i} className={`p-10 rounded-[40px] bg-gradient-to-br ${exam.color} border border-white/5 hover:border-white/20 group transition-all cursor-pointer`}>
-                <h3 className="text-4xl font-black text-white uppercase tracking-tighter mb-2">{exam.name}</h3>
-                <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{exam.type}</p>
+              <div key={i} className={`p-10 rounded-[40px] bg-gradient-to-br ${exam.color} border group transition-all cursor-pointer shadow-sm hover:shadow-md`}>
+                <h3 className={`text-4xl font-display font-black ${exam.textColor} uppercase tracking-tighter mb-2`}>{exam.name}</h3>
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{exam.type}</p>
                 <div className="mt-12 flex items-center justify-between">
-                  <span className="text-[10px] font-black text-white uppercase tracking-widest underline underline-offset-8">Explore Course</span>
-                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white group-hover:bg-white group-hover:text-[#0A0817] transition-all">
+                  <span className={`text-[10px] font-bold ${exam.textColor} uppercase tracking-widest underline underline-offset-8`}>Explore Course</span>
+                  <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
                     <ArrowRight size={20} />
                   </div>
                 </div>
@@ -242,10 +242,10 @@ const Landing: React.FC = () => {
       </section>
 
       {/* Why Section */}
-      <section className="py-40 px-6 bg-white/[0.01]">
+      <section className="py-40 px-6 bg-slate-100/50 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <Badge className="mb-6">THE LEARNING EDGE</Badge>
-          <h2 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter mb-12">Why Choose<br/>Cypher Scholar?</h2>
+          <h2 className="text-5xl md:text-7xl font-display font-black text-slate-900 tracking-tight mb-12">Why Choose<br/>Cypher Scholar?</h2>
           
           <div className="space-y-4">
             {[
@@ -255,28 +255,28 @@ const Landing: React.FC = () => {
               "Real-time progress tracking of every student",
               "Board-certified content (JEE, NEET, CBSE) verified by experts"
             ].map((item, i) => (
-              <div key={i} className="glass-panel p-6 flex items-center gap-6 border-white/5 hover:bg-white/5 transition-colors">
-                <CheckCircle2 size={24} className="text-emerald-400 shrink-0" />
-                <p className="text-lg font-bold text-white uppercase tracking-tight text-left">{item}</p>
+              <div key={i} className="vibrant-card p-6 flex items-center gap-6 group">
+                <CheckCircle2 size={24} className="text-green-500 shrink-0" />
+                <p className="text-lg font-bold text-slate-700 tracking-tight text-left">{item}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <footer className="py-20 border-t border-white/5 text-center relative z-10">
+      <footer className="py-20 border-t border-slate-100 text-center relative z-10 bg-white">
          <div className="flex flex-col items-center gap-6 mb-12">
-            <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-slate-400 mb-4 border border-white/10 group hover:border-indigo-500 transition-all">
+            <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-300 mb-4 border border-slate-100 group hover:border-primary transition-all">
                <span className="text-3xl">🎓</span>
             </div>
-            <div className="flex justify-center gap-10 opacity-30 grayscale hover:grayscale-0 transition-all duration-500">
+            <div className="flex justify-center gap-10 opacity-30">
                <ShieldCheck className="text-slate-400" />
                <Database className="text-slate-400" />
                <Network className="text-slate-400" />
                <Lock className="text-slate-400" />
             </div>
          </div>
-         <p className="text-slate-600 font-bold text-[10px] uppercase tracking-[0.5em]">Cypher Scholar © 2026 // Helping Students Reach Their Goals Across India</p>
+         <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.5em]">Cypher Scholar © 2026 // Helping Students Reach Their Goals Across India</p>
       </footer>
     </div>
   );

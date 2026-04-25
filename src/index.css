@@ -1,18 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  --font-display: "Inter", sans-serif;
+  --font-display: "Outfit", sans-serif;
 
-  --color-slate-925: #0a0e1a;
   --color-primary: #6366f1;
-  --color-secondary: #8b5cf6;
-  --color-accent: #06b6d4;
-  --color-success: #10b981;
+  --color-secondary: #a855f7;
+  --color-accent: #ec4899;
+  
+  --color-physics: #3b82f6;
+  --color-chemistry: #10b981;
+  --color-math: #8b5cf6;
+  --color-biology: #f97316;
+  --color-english: #ec4899;
+
+  --color-success: #22c55e;
   --color-warning: #f59e0b;
-  --color-danger: #ef4444;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+
+  --radius-xl: 32px;
+  --radius-lg: 20px;
+  --radius-md: 12px;
+
+  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+  --shadow-float: 0 20px 50px -12px rgba(99, 102, 241, 0.15);
 }
 
 @layer base {
@@ -21,127 +34,78 @@
   }
 
   body {
-    @apply bg-[#070512] text-slate-200 font-sans antialiased overflow-x-hidden;
+    @apply bg-slate-50 text-slate-900 font-sans antialiased overflow-x-hidden;
     background-image: 
-      radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
-      radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.1) 0%, transparent 40%);
+      radial-gradient(circle at 100% 0%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
+      radial-gradient(circle at 0% 100%, rgba(236, 72, 153, 0.05) 0%, transparent 40%);
     background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold tracking-tight;
   }
 }
 
 @layer components {
-  /* Glassmorphism Card (Task 13) */
-  .glass-card {
-    @apply bg-white/10 backdrop-blur-[10px] border border-white/20 rounded-[20px] transition-all duration-300;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+  /* Vibrant Cards */
+  .vibrant-card {
+    @apply bg-white border border-slate-100 rounded-lg shadow-card p-6 transition-all duration-300;
   }
 
-  .immersive-card {
-    @apply bg-white/10 backdrop-blur-[10px] border border-white/20 rounded-[20px] transition-all duration-300;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+  .vibrant-card:hover {
+    @apply -translate-y-1 shadow-float border-primary/10;
   }
 
-  .glass-card:hover {
-    @apply -translate-y-1.5;
-    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
-    border-color: rgba(255, 255, 255, 0.3);
+  /* Gradient Buttons */
+  .btn-primary {
+    @apply px-6 h-12 rounded-full bg-linear-to-r from-primary via-secondary to-accent text-white font-bold text-sm tracking-wide transition-all hover:scale-105 active:scale-95 shadow-md hover:shadow-lg flex items-center justify-center gap-2;
   }
 
-  /* Immersive Button (Task 13) */
-  .immersive-button {
-    @apply px-5 h-11 rounded-[12px] bg-white/5 border border-white/10 text-sm font-semibold transition-all hover:bg-white/10 hover:border-white/20 active:scale-95 flex items-center justify-center gap-2;
+  .btn-secondary {
+    @apply px-6 h-12 rounded-full bg-slate-100 text-slate-700 font-bold text-sm transition-all hover:bg-slate-200 active:scale-95 flex items-center justify-center gap-2;
   }
 
-  .immersive-button-primary {
-    @apply px-6 h-11 rounded-[12px] bg-primary text-white text-sm font-bold transition-all hover:bg-indigo-500 hover:scale-105 hover:shadow-[0_0_20px_rgba(99,102,241,0.4)] active:scale-95 flex items-center justify-center gap-2;
+  /* Vibrant Inputs */
+  .vibrant-input {
+    @apply w-full bg-white border-2 border-slate-100 rounded-md px-4 py-3 text-sm transition-all focus:border-primary/30 focus:ring-4 focus:ring-primary/5 outline-none placeholder:text-slate-400;
   }
 
-  .immersive-button-secondary {
-    @apply px-6 h-11 rounded-[12px] bg-secondary text-white text-sm font-bold transition-all hover:bg-purple-500 hover:scale-105 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] active:scale-95 flex items-center justify-center gap-2;
+  /* Navigation Item */
+  .nav-item {
+    @apply flex flex-col items-center gap-1 p-2 rounded-xl text-slate-400 transition-all hover:text-primary cursor-pointer;
   }
 
-  .immersive-button-danger {
-    @apply px-6 h-11 rounded-[12px] bg-danger text-white text-sm font-bold transition-all hover:bg-red-500 hover:scale-105 hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] active:scale-95 flex items-center justify-center gap-2;
+  .nav-item.active {
+    @apply text-primary font-bold;
   }
 
-  /* Sidebar Item */
-  .sidebar-item {
-    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 transition-all hover:bg-white/5 hover:text-white cursor-pointer;
+  /* Badge Styles */
+  .vibrant-badge {
+    @apply px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border;
   }
 
-  .sidebar-item.active {
-    @apply bg-primary/10 text-primary font-semibold;
-  }
-
-  /* Immersive Input */
-  .immersive-input {
-    @apply bg-white/5 border border-white/10 rounded-[12px] px-4 py-2.5 text-sm text-slate-200 outline-none focus:border-primary/50 focus:bg-white/10 transition-all placeholder:text-slate-600;
-  }
-
-  /* Glass Badge */
-  .immersive-badge {
-    @apply px-2 py-0.5 bg-white/5 border border-white/10 text-[10px] rounded-full font-bold uppercase tracking-wider;
-  }
-
-  /* Design Template Specifics */
-  .glass-panel {
-    background: rgba(30, 27, 75, 0.4);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 32px;
-  }
-  
-  .glass-panel-hover:hover {
-    border: 1px solid rgba(192, 193, 255, 0.3);
-    box-shadow: 0 4px 30px rgba(99, 102, 241, 0.2);
-  }
+  .badge-success { @apply bg-success/10 text-success border-success/20; }
+  .badge-warning { @apply bg-warning/10 text-warning border-warning/20; }
+  .badge-error { @apply bg-error/10 text-error border-error/20; }
 }
 
-.text-glow {
-  text-shadow: 0 0 10px rgba(192, 193, 255, 0.5);
+.primary-gradient-text {
+  @apply bg-linear-to-r from-primary via-secondary to-accent bg-clip-text text-transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(30, 27, 75, 0.2); 
+  @apply bg-slate-100;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.3); 
-  border-radius: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.5); 
-}
-
-.bg-animated-gradient {
-  background: linear-gradient(135deg, #1e1b4b, #4c1d95, #1e1b4b);
-  background-size: 200% 200%;
-}
-
-/* Atmospheric Spots */
-.atmosphere-spot {
-  @apply absolute rounded-full blur-[120px] pointer-events-none z-0;
-}
-
-/* Scrollbar Style */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  @apply bg-transparent;
-}
-::-webkit-scrollbar-thumb {
-  @apply bg-white/10 rounded-full hover:bg-white/20;
+  @apply bg-slate-300 rounded-full hover:bg-slate-400;
 }
 
 /* Page Transition Wrapper */
 .page-wrapper {
-  overflow-x: hidden;
-  width: 100%;
+  @apply w-full min-h-screen pt-16 pb-24 md:pb-8 md:pl-64;
 }
 

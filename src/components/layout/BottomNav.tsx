@@ -3,7 +3,11 @@ import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, Users, BookOpen, Settings2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
-const BottomNav: React.FC = () => {
+interface BottomNavProps {
+  className?: string;
+}
+
+const BottomNav: React.FC<BottomNavProps> = ({ className }) => {
   const items = [
     { icon: <LayoutDashboard size={20} />, label: 'Overview', path: '/dashboard' },
     { icon: <Users size={20} />, label: 'Users', path: '/admin/users' },
@@ -12,7 +16,10 @@ const BottomNav: React.FC = () => {
   ];
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 h-20 bg-slate-950/80 backdrop-blur-2xl border-t border-white/5 flex items-center justify-around px-4 md:hidden z-50">
+    <nav className={cn(
+      "fixed bottom-0 inset-x-0 h-20 bg-white/80 backdrop-blur-2xl border-t border-slate-100 flex items-center justify-around px-4 md:hidden z-50",
+      className
+    )}>
       {items.map((item) => (
         <NavLink
           key={item.path}

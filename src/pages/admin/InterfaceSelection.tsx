@@ -3,14 +3,15 @@ import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { GraduationCap, Edit3, ShieldAlert, Check } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { UserRole } from '../../types';
 
 const InterfaceSelection: React.FC = () => {
   const navigate = useNavigate();
-  const { profile, setViewMode } = useAuth();
+  const { profile, setEffectiveRole } = useAuth();
 
   const options = [
     {
-      id: 'student',
+      id: UserRole.STUDENT,
       title: 'Student View',
       desc: 'Experience the platform as a student',
       icon: <GraduationCap size={48} />,
@@ -20,7 +21,7 @@ const InterfaceSelection: React.FC = () => {
       border: 'border-blue-500/30'
     },
     {
-      id: 'editor',
+      id: UserRole.EDITOR,
       title: 'Editor View',
       desc: 'Manage and upload content',
       icon: <Edit3 size={48} />,
@@ -30,7 +31,7 @@ const InterfaceSelection: React.FC = () => {
       border: 'border-purple-500/30'
     },
     {
-      id: 'admin',
+      id: UserRole.SUPERADMIN,
       title: 'Admin Control',
       desc: 'Full platform management',
       icon: <ShieldAlert size={48} />,
@@ -42,14 +43,11 @@ const InterfaceSelection: React.FC = () => {
     }
   ];
 
-  const handleSelect = (mode: string) => {
-    if (setViewMode) {
-      setViewMode(mode as any);
-      localStorage.setItem('cypher_view_mode', mode);
-      if (mode === 'admin') navigate('/admin/analytics');
-      else if (mode === 'editor') navigate('/admin/content');
-      else navigate('/dashboard');
-    }
+  const handleSelect = (mode: UserRole) => {
+    setEffectiveRole(mode);
+    if (mode === UserRole.SUPERADMIN) navigate('/admin/overview');
+    else if (mode === UserRole.EDITOR) navigate('/editor/dashboard');
+    else navigate('/dashboard');
   };
 
   return (

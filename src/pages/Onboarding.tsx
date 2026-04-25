@@ -82,18 +82,18 @@ const Onboarding: React.FC = () => {
       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
       className="text-center space-y-8"
     >
-      <div className="w-24 h-24 bg-indigo-600/10 rounded-[40px] flex items-center justify-center mx-auto text-indigo-400">
+      <div className="w-24 h-24 bg-primary/10 rounded-[40px] flex items-center justify-center mx-auto text-primary">
         <Sparkles size={48} />
       </div>
       <div className="space-y-4">
-        <h1 className="text-4xl font-black text-white uppercase tracking-tighter">Welcome to Cypher Scholar! 🎓</h1>
-        <p className="text-slate-400 text-lg font-medium leading-relaxed max-w-md mx-auto">
+        <h1 className="text-4xl font-display font-black text-slate-900 tracking-tight">Welcome to Cypher Scholar! 🎓</h1>
+        <p className="text-slate-500 text-lg font-medium leading-relaxed max-w-md mx-auto">
           Let's personalize your learning experience in just 2 minutes. We'll set up your dashboard based on your goals.
         </p>
       </div>
       <button 
         onClick={nextStep}
-        className="w-full h-16 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-2xl shadow-indigo-600/20 hover:scale-105 transition-all group"
+        className="w-full btn-primary h-16 group"
       >
         Let's Get Started <ChevronRight size={18} className="inline ml-2 group-hover:translate-x-1 transition-transform" />
       </button>
@@ -105,35 +105,35 @@ const Onboarding: React.FC = () => {
       initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
       className="space-y-8"
     >
-      <div className="space-y-2">
-        <h2 className="text-2xl font-black text-white uppercase tracking-tighter">Tell us about yourself</h2>
-        <p className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Step 2 of 5</p>
+      <div className="space-y-1">
+        <h2 className="text-2xl font-display font-bold text-slate-900 tracking-tight">Tell us about yourself</h2>
+        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Step 2 of 5</p>
       </div>
       
       <div className="space-y-6">
         <div className="space-y-2">
-          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Full Name *</label>
+          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Full Name *</label>
           <div className="relative">
-            <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+            <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input 
               type="text" 
               value={formData.displayName}
               onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
-              className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 text-white font-bold focus:outline-none focus:border-indigo-500 transition-all shadow-inner"
+              className="vibrant-input pl-12 h-14"
               placeholder="Your Name"
             />
           </div>
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Phone Number (Optional)</label>
+          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Phone Number (Optional)</label>
           <div className="relative">
-             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-sm">+91</span>
+             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">+91</span>
              <input 
               type="tel" 
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-16 pr-4 text-white font-bold focus:outline-none focus:border-indigo-500 transition-all shadow-inner"
+              className="vibrant-input pl-16 h-14"
               placeholder="88888 88888"
             />
           </div>
@@ -141,11 +141,11 @@ const Onboarding: React.FC = () => {
       </div>
 
       <div className="flex gap-4 pt-4">
-        <button onClick={prevStep} className="flex-1 h-16 bg-white/5 text-slate-400 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-white/10 transition-all">Back</button>
+        <button onClick={prevStep} className="flex-1 btn-secondary h-16">Back</button>
         <button 
           onClick={nextStep} 
           disabled={!formData.displayName}
-          className="flex-3 h-16 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-indigo-600/20 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 transition-all"
+          className="flex-3 btn-primary h-16 disabled:opacity-50"
         >
           Continue
         </button>
@@ -158,18 +158,18 @@ const Onboarding: React.FC = () => {
       initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
       className="space-y-8"
     >
-      <div className="space-y-2">
-        <h2 className="text-2xl font-black text-white uppercase tracking-tighter">Your Academic Information</h2>
-        <p className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Step 3 of 5</p>
+      <div className="space-y-1">
+        <h2 className="text-2xl font-display font-bold text-slate-900 tracking-tight">Your Academic Information</h2>
+        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Step 3 of 5</p>
       </div>
 
       <div className="space-y-6">
         <div className="space-y-2">
-          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Current Grade/Level *</label>
+          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Current Grade/Level *</label>
           <select 
             value={formData.grade}
             onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
-            className="w-full h-14 bg-[#121021] border border-white/10 rounded-2xl px-4 text-white font-bold focus:outline-none focus:border-indigo-500 transition-all"
+            className="vibrant-input h-14"
           >
             <option value="">Select Grade</option>
             <option value="8">Grade 8</option>
@@ -184,14 +184,14 @@ const Onboarding: React.FC = () => {
 
         {(formData.grade === '11' || formData.grade === '12') && (
           <div className="space-y-4">
-            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Stream *</label>
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Stream *</label>
             <div className="grid grid-cols-2 gap-3">
               {['PCM', 'PCB', 'PCMB', 'Commerce', 'Arts'].map(s => (
                 <button 
                   key={s}
                   onClick={() => setFormData({ ...formData, stream: s })}
-                  className={`h-12 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all ${
-                    formData.stream === s ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg' : 'bg-white/5 border-white/10 text-slate-500 hover:border-white/20'
+                  className={`h-12 rounded-xl border text-[10px] font-bold uppercase tracking-widest transition-all ${
+                    formData.stream === s ? 'bg-primary border-primary text-white shadow-lg' : 'bg-slate-50 border-slate-100 text-slate-500 hover:border-primary/20'
                   }`}
                 >
                   {s}
@@ -204,11 +204,11 @@ const Onboarding: React.FC = () => {
         {formData.grade === 'Engineering' && (
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Year *</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Year *</label>
               <select 
                 value={formData.year}
                 onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-                className="w-full h-12 bg-[#121021] border border-white/10 rounded-xl px-4 text-white font-bold text-xs"
+                className="vibrant-input h-12"
               >
                 <option value="">Select Year</option>
                 <option value="1">1st Year</option>
@@ -218,12 +218,12 @@ const Onboarding: React.FC = () => {
               </select>
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Branch *</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Branch *</label>
               <input 
                 type="text" 
                 value={formData.branch}
                 onChange={(e) => setFormData({ ...formData, branch: e.target.value })}
-                className="w-full h-12 bg-[#121021] border border-white/10 rounded-xl px-4 text-white font-bold text-xs"
+                className="vibrant-input h-12"
                 placeholder="e.g. CSE"
               />
             </div>
@@ -232,11 +232,11 @@ const Onboarding: React.FC = () => {
       </div>
 
       <div className="flex gap-4 pt-4">
-        <button onClick={prevStep} className="flex-1 h-16 bg-white/5 text-slate-400 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-white/10 transition-all">Back</button>
+        <button onClick={prevStep} className="flex-1 btn-secondary h-16">Back</button>
         <button 
           onClick={nextStep} 
           disabled={!formData.grade}
-          className="flex-3 h-16 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-indigo-600/20 hover:scale-105 disabled:opacity-50 transition-all"
+          className="flex-3 btn-primary h-16 disabled:opacity-50"
         >
           Continue
         </button>
@@ -249,9 +249,9 @@ const Onboarding: React.FC = () => {
       initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
       className="space-y-8"
     >
-      <div className="space-y-2">
-        <h2 className="text-2xl font-black text-white uppercase tracking-tighter">What's your target exam? *</h2>
-        <p className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Step 4 of 5</p>
+      <div className="space-y-1">
+        <h2 className="text-2xl font-display font-bold text-slate-900 tracking-tight">What's your target exam? *</h2>
+        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Step 4 of 5</p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
@@ -271,29 +271,29 @@ const Onboarding: React.FC = () => {
           <button 
             key={ex.id}
             onClick={() => handleTargetToggle(ex.id)}
-            className={`p-4 rounded-2xl border text-left flex items-start gap-4 transition-all ${
+            className={`p-4 rounded-xl border text-left flex items-start gap-4 transition-all ${
               formData.targets.includes(ex.id) 
-              ? 'bg-indigo-600 border-indigo-400 text-white shadow-xl translate-y-[-2px]' 
-              : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20'
+              ? 'bg-primary border-primary text-white shadow-xl translate-y-[-2px]' 
+              : 'bg-slate-50 border-slate-100 text-slate-500 hover:border-primary/20'
             }`}
           >
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${formData.targets.includes(ex.id) ? 'bg-white/20' : 'bg-white/5'}`}>
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${formData.targets.includes(ex.id) ? 'bg-white/20' : 'bg-slate-200'}`}>
               {formData.targets.includes(ex.id) ? <Check size={16} /> : <Target size={16} />}
             </div>
             <div>
-              <p className="text-xs font-black uppercase tracking-tight leading-none mb-1">{ex.id}</p>
-              <p className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">{ex.cat}</p>
+              <p className="text-xs font-bold uppercase tracking-tight leading-none mb-1">{ex.id}</p>
+              <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">{ex.cat}</p>
             </div>
           </button>
         ))}
       </div>
 
       <div className="flex gap-4 pt-4">
-        <button onClick={prevStep} className="flex-1 h-16 bg-white/5 text-slate-400 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-white/10 transition-all">Back</button>
+        <button onClick={prevStep} className="flex-1 btn-secondary h-16">Back</button>
         <button 
           onClick={nextStep} 
           disabled={formData.targets.length === 0}
-          className="flex-3 h-16 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-indigo-600/20 hover:scale-105 disabled:opacity-50 transition-all"
+          className="flex-3 btn-primary h-16 disabled:opacity-50"
         >
           Continue
         </button>
@@ -306,35 +306,35 @@ const Onboarding: React.FC = () => {
       initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
       className="space-y-8"
     >
-      <div className="space-y-2">
-        <h2 className="text-2xl font-black text-white uppercase tracking-tighter">Your Institution (Optional)</h2>
-        <p className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Step 5 of 5</p>
+      <div className="space-y-1">
+        <h2 className="text-2xl font-display font-bold text-slate-900 tracking-tight">Your Institution (Optional)</h2>
+        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Step 5 of 5</p>
       </div>
 
       <div className="space-y-6">
         <div className="space-y-2">
-          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">School/College/Coaching</label>
+          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">School/College/Coaching</label>
           <div className="relative">
-            <Building className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+            <Building className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input 
               type="text" 
               value={formData.institution}
               onChange={(e) => setFormData({ ...formData, institution: e.target.value })}
-              className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 text-white font-bold focus:outline-none focus:border-indigo-500"
+              className="vibrant-input pl-12 h-14"
               placeholder="Institution Name"
             />
           </div>
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">City</label>
+          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">City</label>
           <div className="relative">
-            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input 
               type="text" 
               value={formData.city}
               onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-              className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 text-white font-bold focus:outline-none focus:border-indigo-500"
+              className="vibrant-input pl-12 h-14"
               placeholder="e.g. Mumbai"
             />
           </div>
@@ -342,11 +342,11 @@ const Onboarding: React.FC = () => {
       </div>
 
       <div className="flex gap-4 pt-4">
-        <button onClick={prevStep} className="flex-1 h-16 bg-white/5 text-slate-400 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-white/10 transition-all">Back</button>
+        <button onClick={prevStep} className="flex-1 btn-secondary h-16">Back</button>
         <button 
           onClick={handleComplete} 
           disabled={loading}
-          className="flex-3 h-16 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-indigo-600/20 hover:scale-105 disabled:opacity-50 transition-all flex items-center justify-center gap-3"
+          className="flex-3 btn-primary h-16 disabled:opacity-50 flex items-center justify-center gap-3"
         >
           {loading ? 'Finalizing...' : 'Complete Setup'} <Check size={18} />
         </button>
@@ -355,14 +355,14 @@ const Onboarding: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#070512] flex items-center justify-center p-6 bg-radial-gradient">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px] -mr-64 -mt-64" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] -ml-64 -mb-64" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -mr-64 -mt-64" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[120px] -ml-64 -mb-64" />
       </div>
 
       <div className="w-full max-w-xl relative">
-        <div className="glass-panel p-12 lg:p-16 border-white/5 bg-white/[0.02]">
+        <div className="vibrant-card p-12 lg:p-16">
           <AnimatePresence mode="wait">
             {step === 1 && renderWelcome()}
             {step === 2 && renderBasicInfo()}
@@ -377,7 +377,7 @@ const Onboarding: React.FC = () => {
           {[1, 2, 3, 4, 5].map(s => (
             <div 
               key={s} 
-              className={`h-1.5 rounded-full transition-all duration-500 ${step >= s ? 'w-8 bg-indigo-500' : 'w-2 bg-white/10'}`} 
+              className={`h-2 rounded-full transition-all duration-500 ${step >= s ? 'w-10 bg-primary' : 'w-2 bg-slate-200'}`} 
             />
           ))}
         </div>

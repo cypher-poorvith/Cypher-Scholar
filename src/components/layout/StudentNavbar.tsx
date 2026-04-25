@@ -22,9 +22,10 @@ import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../../lib/utils';
 
 const StudentNavbar: React.FC = () => {
-  const { user, profile, logout } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
@@ -40,37 +41,37 @@ const StudentNavbar: React.FC = () => {
   ];
 
   const handleLogout = async () => {
-    await logout();
-    navigate('/');
+    await signOut();
+    navigate('/login');
   };
 
   return (
     <div className="w-full relative z-50">
       {/* 1. TOP NAVIGATION BAR */}
-      <header className="sticky top-0 z-50 bg-[#1e1b4b]/40 backdrop-blur-[12px] border-b border-white/10 shadow-lg">
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-[12px] border-b border-slate-100 shadow-sm">
         <div className="max-w-[1440px] mx-auto px-8 py-4 flex items-center justify-between">
           
           {/* LEFT: Logo & Search */}
           <div className="flex items-center gap-8 flex-1">
             <Link to="/" className="flex items-center gap-3 shrink-0 group">
-               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white shadow-lg shadow-indigo-600/20 group-hover:scale-110 transition-transform">
+               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
                   <span className="text-2xl">🎓</span>
                </div>
-               <h1 className="font-sans text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 hidden sm:block uppercase tracking-tight">
-                  Cypher <span className="text-white">Scholar</span>
+               <h1 className="font-display text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary hidden sm:block tracking-tight">
+                  Cypher <span className="text-slate-900">Scholar</span>
                </h1>
             </Link>
             
             {/* Search Bar */}
             <div className={cn(
-              "hidden md:flex items-center gap-3 bg-white/[0.03] border border-white/10 rounded-xl px-4 py-2.5 transition-all w-full max-w-md",
-              isSearchFocused && "bg-white/[0.07] border-indigo-500/50 ring-4 ring-indigo-500/10"
+              "hidden md:flex items-center gap-3 bg-slate-100/50 border border-slate-200 rounded-xl px-4 py-2.5 transition-all w-full max-w-md",
+              isSearchFocused && "bg-white border-primary/50 ring-4 ring-primary/10"
             )}>
-              <Search className={cn("text-slate-500 transition-colors", isSearchFocused && "text-indigo-400")} size={18} />
+              <Search className={cn("text-slate-400 transition-colors", isSearchFocused && "text-primary")} size={18} />
               <input 
                 type="text" 
                 placeholder="Search resources, topics, exams..." 
-                className="bg-transparent border-none text-sm font-bold text-white w-full focus:outline-none placeholder:text-slate-500 placeholder:font-medium placeholder:uppercase placeholder:tracking-widest"
+                className="bg-transparent border-none text-sm font-bold text-slate-700 w-full focus:outline-none placeholder:text-slate-400 placeholder:font-medium placeholder:uppercase placeholder:tracking-widest"
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
               />
@@ -81,30 +82,30 @@ const StudentNavbar: React.FC = () => {
           <div className="flex items-center gap-6">
             {!user ? (
                <div className="flex items-center gap-3">
-                  <Link to="/login" className="text-xs font-black text-slate-400 hover:text-white transition-colors uppercase tracking-widest px-4 py-2">
+                  <Link to="/login" className="text-xs font-bold text-slate-500 hover:text-primary transition-colors uppercase tracking-widest px-4 py-2">
                     Sign In
                   </Link>
-                  <Link to="/signup" className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white text-xs font-black px-6 py-2.5 rounded-xl hover:opacity-90 transition-all uppercase tracking-widest shadow-lg shadow-indigo-600/20">
+                  <Link to="/signup" className="btn-primary text-xs px-6 py-2.5">
                     Join Now
                   </Link>
                </div>
             ) : (
                <div className="flex items-center gap-4">
                   {/* Streak Badge */}
-                  <div className="hidden lg:flex items-center gap-2 bg-white/[0.03] border border-white/10 rounded-xl px-4 py-2 group hover:bg-white/5 transition-colors cursor-default">
+                  <div className="hidden lg:flex items-center gap-2 bg-orange-50 border border-orange-100 rounded-xl px-4 py-2 group hover:bg-orange-100/50 transition-colors cursor-default">
                     <span className="text-lg group-hover:scale-125 transition-transform duration-500">🔥</span>
-                    <span className="text-[10px] font-black text-warning uppercase tracking-widest leading-none">7 Day Streak</span>
+                    <span className="text-[10px] font-bold text-orange-600 uppercase tracking-widest leading-none">7 Day Streak</span>
                   </div>
                   
                   {/* Notifications */}
-                  <button className="relative p-2.5 rounded-xl bg-white/[0.03] border border-white/10 text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                  <button className="relative p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-slate-500 hover:text-primary hover:bg-white transition-all">
                     <Bell size={20} />
-                    <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full animate-pulse border-2 border-[#1e1b4b]"></span>
+                    <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full animate-pulse border-2 border-white"></span>
                   </button>
                   
                   {/* Scholar Badge */}
-                  <div className="hidden lg:flex items-center gap-2 bg-indigo-500/10 text-indigo-400 px-4 py-2 rounded-xl border border-indigo-500/20 hover:bg-indigo-500/20 transition-all">
-                    <span className="text-[10px] font-black uppercase tracking-widest">Scholar Badge</span>
+                  <div className="hidden lg:flex items-center gap-2 bg-primary/5 text-primary px-4 py-2 rounded-xl border border-primary/10 hover:bg-primary/10 transition-all">
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Scholar Badge</span>
                     <Trophy size={14} />
                   </div>
                   
@@ -112,14 +113,14 @@ const StudentNavbar: React.FC = () => {
                   <div className="relative">
                     <button 
                       onClick={() => setIsProfileOpen(!isProfileOpen)}
-                      className="flex items-center gap-3 p-1 rounded-xl bg-white/[0.03] border border-white/10 hover:bg-white/5 transition-all"
+                      className="flex items-center gap-3 p-1 rounded-xl bg-slate-50 border border-slate-100 hover:bg-white transition-all shadow-sm"
                     >
                       <img 
                         src={profile?.photoURL || `https://ui-avatars.com/api/?name=${profile?.displayName}&background=6366f1&color=fff`} 
                         alt="Profile" 
-                        className="w-8 h-8 rounded-lg object-cover ring-2 ring-indigo-500/20"
+                        className="w-8 h-8 rounded-lg object-cover ring-2 ring-primary/10"
                       />
-                      <span className="font-bold text-xs text-white max-w-[80px] truncate hidden sm:block">
+                      <span className="font-bold text-xs text-slate-700 max-w-[80px] truncate hidden sm:block">
                         {profile?.displayName?.split(' ')[0]}
                       </span>
                     </button>
@@ -138,29 +139,29 @@ const StudentNavbar: React.FC = () => {
                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                            className="absolute right-0 mt-4 w-56 bg-[#1e1b4b] border border-white/10 rounded-2xl shadow-2xl p-2 z-50 overflow-hidden"
+                            className="absolute right-0 mt-4 w-56 bg-white border border-slate-100 rounded-2xl shadow-xl p-2 z-50 overflow-hidden"
                           >
-                             <div className="px-4 py-3 border-b border-white/5 mb-2">
-                                <p className="text-xs font-black text-white uppercase tracking-tight truncate">{profile?.displayName}</p>
-                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest truncate">{profile?.email}</p>
+                             <div className="px-4 py-3 border-b border-slate-50 mb-2">
+                                <p className="text-xs font-bold text-slate-900 uppercase tracking-tight truncate">{profile?.displayName}</p>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest truncate">{profile?.email}</p>
                              </div>
-                             <Link to="/profile" className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                             <Link to="/profile" className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold text-slate-500 hover:text-primary hover:bg-slate-50 transition-all">
                                 <User size={16} /> My Profile
                              </Link>
-                             <Link to="/exams" className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                             <Link to="/exams" className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold text-slate-500 hover:text-primary hover:bg-slate-50 transition-all">
                                 <School size={16} /> My Exams
                              </Link>
                              {(profile?.role === 'superadmin' || profile?.role === 'editor') && (
                                 <Link 
                                   to={profile.role === 'superadmin' ? "/admin/overview" : "/editor/dashboard"} 
-                                  className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold text-indigo-400 hover:text-indigo-300 hover:bg-white/5 transition-all"
+                                  className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold text-primary hover:bg-slate-50 transition-all"
                                 >
                                    <Layout size={16} /> {profile.role === 'superadmin' ? 'Admin Portal' : 'Editor Portal'}
                                 </Link>
                              )}
                              <button 
                                 onClick={handleLogout}
-                                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold text-rose-500 hover:text-rose-400 hover:bg-rose-500/10 transition-all border-t border-white/5 mt-2"
+                                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold text-rose-500 hover:bg-rose-50 transition-all border-t border-slate-50 mt-2"
                              >
                                 <LogOut size={16} /> Logout
                              </button>
@@ -176,7 +177,7 @@ const StudentNavbar: React.FC = () => {
       </header>
 
       {/* 2. MAIN HORIZONTAL NAVIGATION (Tab Bar) */}
-      <nav className="w-full border-b border-white/5 bg-[#13131b]/80 backdrop-blur-md sticky top-20 z-40">
+      <nav className="w-full border-b border-slate-100 bg-white/80 backdrop-blur-md sticky top-20 z-40">
         <div className="max-w-[1440px] mx-auto px-8">
           <ul className="flex items-center gap-8 overflow-x-auto no-scrollbar py-2">
             {navItems.map((item) => {
@@ -186,15 +187,15 @@ const StudentNavbar: React.FC = () => {
                   <Link 
                     to={item.path} 
                     className={cn(
-                      "flex items-center gap-2 py-3 px-1 border-b-2 transition-all group whitespace-nowrap",
+                      "flex items-center gap-2 py-3 px-1 border-b-4 transition-all group whitespace-nowrap",
                       isActive 
-                        ? "text-indigo-400 border-indigo-500 font-black" 
-                        : "text-slate-500 border-transparent font-bold hover:text-white hover:border-white/20"
+                        ? "text-primary border-primary font-bold" 
+                        : "text-slate-400 border-transparent font-medium hover:text-slate-900 hover:border-slate-200"
                     )}
                   >
                     <span className={cn(
                       "transition-transform duration-300 group-hover:scale-110",
-                      isActive ? "text-indigo-400" : "text-slate-600 group-hover:text-white"
+                      isActive ? "text-primary" : "text-slate-300 group-hover:text-slate-900"
                     )}>
                       {item.icon}
                     </span>

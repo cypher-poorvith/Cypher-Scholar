@@ -6,25 +6,22 @@ import { useNavigate } from 'react-router-dom';
 import { UserRole } from '../../types';
 
 const InterfaceSwitcher: React.FC = () => {
-  const { profile, viewMode, setViewMode } = useAuth();
+  const { profile, effectiveRole, setEffectiveRole } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
   if (profile?.role !== UserRole.SUPERADMIN) return null;
 
   const modes = [
-    { id: 'student', label: 'Student View', icon: <GraduationCap size={16} />, path: '/dashboard', color: 'text-blue-400' },
-    { id: 'editor', label: 'Editor View', icon: <Edit3 size={16} />, path: '/admin/content', color: 'text-purple-400' },
-    { id: 'admin', label: 'Admin View', icon: <ShieldAlert size={16} />, path: '/admin/analytics', color: 'text-indigo-400' },
+    { id: UserRole.STUDENT, label: 'Student View', icon: <GraduationCap size={16} />, path: '/dashboard', color: 'text-blue-400' },
+    { id: UserRole.EDITOR, label: 'Editor View', icon: <Edit3 size={16} />, path: '/editor/dashboard', color: 'text-purple-400' },
+    { id: UserRole.SUPERADMIN, label: 'Admin View', icon: <ShieldAlert size={16} />, path: '/admin/overview', color: 'text-indigo-400' },
   ];
 
-  const handleSwitch = (mode: any, path: string) => {
-    if (setViewMode) {
-      setViewMode(mode);
-      localStorage.setItem('cypher_view_mode', mode);
-      setIsOpen(false);
-      navigate(path);
-    }
+  const handleSwitch = (mode: UserRole, path: string) => {
+    setEffectiveRole(mode);
+    setIsOpen(false);
+    navigate(path);
   };
 
   return (
@@ -44,18 +41,18 @@ const InterfaceSwitcher: React.FC = () => {
                   key={mode.id}
                   onClick={() => handleSwitch(mode.id, mode.path)}
                   className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
-                    viewMode === mode.id 
+                    effectiveRole === mode.id 
                     ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' 
                     : 'text-slate-400 hover:bg-white/5 hover:text-white'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className={viewMode === mode.id ? 'text-white' : mode.color}>
+                    <div className={effectiveRole === mode.id ? 'text-white' : mode.color}>
                       {mode.icon}
                     </div>
                     <span className="text-xs font-bold uppercase tracking-tight">{mode.label}</span>
                   </div>
-                  {viewMode === mode.id && <Check size={14} />}
+                  {effectiveRole === mode.id && <Check size={14} />}
                 </button>
               ))}
             </div>
@@ -75,7 +72,7 @@ const InterfaceSwitcher: React.FC = () => {
         {/* Active Mode Badge (Desktop Only) */}
         <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-white/5 backdrop-blur-xl border border-white/10 px-4 py-2 rounded-xl hidden md:block whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
            <span className="text-[10px] font-black text-white uppercase tracking-widest">
-             Mode: <span className="text-indigo-400">{viewMode?.toUpperCase()}</span>
+             Mode: <span className="text-indigo-400">{effectiveRole?.toUpperCase()}</span>
            </span>
         </div>
       </motion.button>

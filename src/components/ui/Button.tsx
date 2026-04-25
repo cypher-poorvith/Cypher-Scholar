@@ -17,16 +17,16 @@ const Button: React.FC<ButtonProps> = ({
   ...props 
 }) => {
   const variants = {
-    primary: "immersive-button-primary",
-    secondary: "immersive-button-secondary",
-    danger: "immersive-button-danger",
-    ghost: "bg-transparent text-slate-400 hover:text-white hover:bg-white/5 border-transparent",
-    outline: "bg-transparent border-white/10 text-slate-300 hover:border-white/30 hover:bg-white/5",
+    primary: "btn-primary",
+    secondary: "btn-secondary",
+    danger: "bg-red-500 text-white hover:bg-red-600 shadow-md",
+    ghost: "bg-transparent text-slate-500 hover:text-primary hover:bg-primary/5 border-transparent",
+    outline: "bg-transparent border-slate-200 text-slate-600 hover:border-primary/30 hover:bg-primary/5",
   };
 
   const sizes = {
     sm: "h-9 px-4 text-xs",
-    md: "h-11 px-6 text-sm",
+    md: "h-12 px-6 text-sm",
     lg: "h-14 px-10 text-base",
   };
 

@@ -6,7 +6,8 @@ export enum SubjectCategory {
 export enum UserRole {
   SUPERADMIN = 'superadmin',
   EDITOR = 'editor',
-  USER = 'user',
+  STUDENT = 'student',
+  USER = 'user', // Keeping for compatibility
   VIEWER = 'viewer'
 }
 
