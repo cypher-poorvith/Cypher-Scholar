@@ -7,8 +7,6 @@ import {
   List,
   Users
 } from 'lucide-react';
-import { collection, query, getDocs, where } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
 import { UserProfile, UserRole } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import TeamMemberCard from '../../components/features/TeamMemberCard';
@@ -45,12 +43,12 @@ const TeamManagement: React.FC = () => {
   const fetchTeam = async () => {
     setLoading(true);
     try {
-      const q = query(
-        collection(db, 'users'), 
-        where('role', 'in', [UserRole.SUPERADMIN, UserRole.EDITOR, UserRole.VIEWER])
+      const response = await fetch('/api/admin/users');
+      if (!response.ok) throw new Error('Failed to fetch');
+      const allUsers: UserProfile[] = await response.json();
+      const teamData = allUsers.filter(u => 
+        [UserRole.SUPERADMIN, UserRole.EDITOR, UserRole.VIEWER].includes(u.role)
       );
-      const snapshot = await getDocs(q);
-      const teamData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as UserProfile));
       setMembers(teamData);
     } catch (err) {
       console.error("Error fetching team:", err);

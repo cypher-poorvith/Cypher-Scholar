@@ -6,8 +6,6 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { doc, updateDoc } from 'firebase/firestore';
-import { db, handleFirestoreError } from '../lib/firebase';
 import { UserStatus } from '../types';
 
 const Onboarding: React.FC = () => {
@@ -45,26 +43,33 @@ const Onboarding: React.FC = () => {
     if (!user || !profile) return;
     setLoading(true);
     try {
-      const userRef = doc(db, 'users', user.uid);
-      await updateDoc(userRef, {
-        displayName: formData.displayName,
-        phone: formData.phone,
-        status: UserStatus.ACTIVE,
-        onboardingComplete: true,
-        academicDetails: {
-          grade: formData.grade,
-          stream: formData.stream || undefined,
-          year: formData.year || undefined,
-          branch: formData.branch || undefined,
-          targets: formData.targets,
-          institution: formData.institution || undefined,
-          city: formData.city || undefined
-        }
+      const response = await fetch('/api/user/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          displayName: formData.displayName,
+          phone: formData.phone,
+          status: UserStatus.ACTIVE,
+          onboardingComplete: true,
+          academicDetails: {
+            grade: formData.grade,
+            stream: formData.stream || undefined,
+            year: formData.year || undefined,
+            branch: formData.branch || undefined,
+            targets: formData.targets,
+            institution: formData.institution || undefined,
+            city: formData.city || undefined
+          }
+        })
       });
+
+      if (!response.ok) throw new Error('Failed to update profile');
+      
       // Force profile refresh by navigating
       window.location.href = '/dashboard';
     } catch (e) {
-      handleFirestoreError(e, 'update', `users/${user.uid}`);
+      console.error("Error updating profile:", e);
+      alert("Failed to complete onboarding. Please try again.");
     } finally {
       setLoading(false);
     }

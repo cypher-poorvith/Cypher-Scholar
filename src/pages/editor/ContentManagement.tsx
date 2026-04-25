@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Layers, FileText, Database, Plus, ChevronRight, Search } from 'lucide-react';
-import ExamManager from '../components/editor/ExamManager';
-import QuestionEditor from '../components/editor/QuestionEditor';
+import ExamManager from '../../components/editor/ExamManager';
+import QuestionEditor from '../../components/editor/QuestionEditor';
 
 const ContentManagement: React.FC = () => {
   const [activeView, setActiveView] = useState<'hierarchy' | 'questions'>('hierarchy');

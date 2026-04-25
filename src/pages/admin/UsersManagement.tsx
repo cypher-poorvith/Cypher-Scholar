@@ -20,8 +20,6 @@ import {
   Bolt
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { collection, query, getDocs, orderBy, limit } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
 import { UserProfile, UserRole, UserStatus } from '../../types';
 import { exportToCSV } from '../../lib/exportUtils';
 import { useToast } from '../../context/ToastContext';
@@ -38,9 +36,9 @@ const UsersManagement: React.FC = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'), limit(100));
-      const snapshot = await getDocs(q);
-      const userData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as UserProfile));
+      const response = await fetch('/api/admin/users');
+      if (!response.ok) throw new Error('Failed to fetch');
+      const userData = await response.json();
       setUsers(userData);
       showToast("Student list updated", "success");
     } catch (err) {

@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { auth, googleProvider } from '../lib/firebase';
-import { signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate, Link } from 'react-router-dom';
-import { Chrome, ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 
 const Login: React.FC = () => {
@@ -14,24 +12,28 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleGoogleSignIn = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-      navigate('/dashboard');
-    } catch (error: any) {
-      if (error.code === 'auth/popup-closed-by-user') return;
-      showToast(error.message || "Authentication failed", "danger");
-    }
-  };
-
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate('/dashboard');
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        showToast("Welcome back!", "success");
+        navigate('/dashboard');
+        // Trigger a reload or context update if needed
+        window.location.reload(); 
+      } else {
+        showToast(data.error || "Invalid credentials", "danger");
+      }
     } catch (error: any) {
-      showToast(error.message || "Invalid credentials", "danger");
+      showToast("Error connecting to server", "danger");
     } finally {
       setLoading(false);
     }
@@ -116,13 +118,6 @@ const Login: React.FC = () => {
             </div>
 
             <div className="space-y-3">
-              <button 
-                onClick={handleGoogleSignIn}
-                className="w-full h-14 bg-white text-[#070512] rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-slate-100 transition-all shadow-xl shadow-white/5"
-              >
-                <Chrome size={20} /> Continue with Google
-              </button>
-
               <button 
                 disabled
                 className="w-full h-14 bg-white/5 border border-white/10 text-slate-500 rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2 relative overflow-hidden group cursor-not-allowed"

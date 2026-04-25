@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom';
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
-import { db, handleFirestoreError } from '../lib/firebase';
 import { Subject, SubjectCategory } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'motion/react';
@@ -23,19 +21,12 @@ const SubjectPage: React.FC = () => {
     const fetchSubjects = async () => {
       setLoading(true);
       try {
-        const q = category === 'all' 
-          ? query(collection(db, 'subjects'), orderBy('order', 'asc'))
-          : query(
-              collection(db, 'subjects'),
-              where('category', '==', category),
-              orderBy('order', 'asc')
-            );
-        const snapshot = await getDocs(q);
-        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Subject));
+        const response = await fetch(`/api/subjects?category=${category}`);
+        if (!response.ok) throw new Error('Failed to fetch');
+        const data = await response.json();
         setSubjects(data);
       } catch (error) {
         console.error("Error fetching subjects", error);
-        handleFirestoreError(error, 'list', 'subjects');
       } finally {
         setLoading(false);
       }

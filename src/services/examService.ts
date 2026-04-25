@@ -1,19 +1,3 @@
-import { 
-  collection, 
-  doc, 
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
-  getDocs, 
-  getDoc, 
-  query, 
-  where, 
-  orderBy, 
-  serverTimestamp,
-  increment
-} from 'firebase/firestore';
-import { db } from '../lib/firebase';
-
 export interface Exam {
   id?: string;
   name: string;
@@ -60,53 +44,66 @@ export interface Question {
 
 // Service Functions
 export const examService = {
-  // Exam Categories
+  // We'll use a single endpoint for the tree for performance in this local version
   async getExams() {
-    const q = query(collection(db, 'exams'), where('active', '==', true));
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Exam));
+    const response = await fetch('/api/exam-tree');
+    const data = await response.json();
+    return data.exams || [];
   },
 
   async addExam(exam: Omit<Exam, 'id'>) {
-    return await addDoc(collection(db, 'exams'), exam);
+    const current = await this.getExamTree();
+    const newExam = { ...exam, id: Math.random().toString(36).substr(2, 9) };
+    current.exams.push(newExam);
+    await this.saveExamTree(current);
+    return { id: newExam.id };
+  },
+
+  async getExamTree() {
+    const response = await fetch('/api/exam-tree');
+    return await response.json();
+  },
+
+  async saveExamTree(tree: any) {
+    await fetch('/api/exam-tree', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(tree)
+    });
   },
 
   // Subjects
   async getSubjects(examId: string) {
-    const q = query(collection(db, 'subjects'), where('examId', '==', examId));
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Subject));
+    const tree = await this.getExamTree();
+    return (tree.subjects || []).filter((s: any) => s.examId === examId);
   },
 
   // Chapters
   async getChapters(subjectId: string) {
-    const q = query(collection(db, 'chapters'), where('subjectId', '==', subjectId), orderBy('order', 'asc'));
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Chapter));
+    const tree = await this.getExamTree();
+    return (tree.chapters || []).filter((c: any) => c.subjectId === subjectId);
   },
 
   // Topics
   async getTopics(chapterId: string) {
-    const q = query(collection(db, 'topics'), where('chapterId', '==', chapterId));
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Topic));
+    const tree = await this.getExamTree();
+    return (tree.topics || []).filter((t: any) => t.chapterId === chapterId);
   },
 
   // Questions
   async addQuestion(question: Omit<Question, 'id'>) {
-    return await addDoc(collection(db, 'questions'), {
-      ...question,
-      createdAt: Date.now()
+    const response = await fetch('/api/questions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(question)
     });
+    return await response.json();
   },
 
   async getQuestions(filters: { subjectId?: string; chapterId?: string; topicId?: string }) {
-    let q = query(collection(db, 'questions'));
-    if (filters.subjectId) q = query(q, where('subjectId', '==', filters.subjectId));
-    if (filters.chapterId) q = query(q, where('chapterId', '==', filters.chapterId));
-    if (filters.topicId) q = query(q, where('topicId', '==', filters.topicId));
-    
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Question));
+    const queryParams = new URLSearchParams(filters as any).toString();
+    const response = await fetch(`/api/questions?${queryParams}`);
+    return await response.json();
   }
 };
+

@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { auth, googleProvider, db } from '../lib/firebase';
-import { signInWithPopup, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate, Link } from 'react-router-dom';
-import { Chrome, ArrowLeft, Eye, EyeOff, User, UserPlus } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff, User, UserPlus } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
-import { UserRole, UserStatus } from '../types';
 
 const Signup: React.FC = () => {
   const navigate = useNavigate();
@@ -22,16 +18,6 @@ const Signup: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleGoogleSignup = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-      navigate('/onboarding');
-    } catch (error: any) {
-      if (error.code === 'auth/popup-closed-by-user') return;
-      showToast(error.message || "Authentication failed", "danger");
-    }
-  };
-
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
@@ -43,40 +29,28 @@ const Signup: React.FC = () => {
 
     setLoading(true);
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-      const user = userCredential.user;
-      
-      await updateProfile(user, { displayName: formData.fullName });
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          displayName: formData.fullName,
+          role: formData.role
+        })
+      });
 
-      // Create profile in firestore
-      const isSuper = formData.email === 'poorvith519@gmail.com' || formData.email === 'admin@123.com';
-      const profileData = {
-        id: user.uid,
-        displayName: formData.fullName,
-        email: formData.email,
-        phone: formData.phone || null,
-        role: isSuper ? UserRole.SUPERADMIN : (formData.role === 'user' ? UserRole.USER : UserRole.EDITOR),
-        status: UserStatus.NEW,
-        createdAt: Date.now(),
-        lastLogin: Date.now(),
-        isActive: true,
-        blocked: false,
-        devices: [],
-        onboardingComplete: false,
-        permissions: {
-          uploadContent: isSuper || formData.role === 'editor',
-          manageUsers: isSuper,
-          viewAnalytics: isSuper,
-          deleteContent: isSuper,
-          createAnnouncements: isSuper,
-          editAppStructure: isSuper
-        }
-      };
+      const data = await response.json();
 
-      await setDoc(doc(db, 'users', user.uid), profileData);
-      navigate('/onboarding');
+      if (response.ok) {
+        showToast("Account created successfully", "success");
+        navigate('/onboarding');
+        window.location.reload();
+      } else {
+        showToast(data.error || "Failed to create account", "danger");
+      }
     } catch (error: any) {
-      showToast(error.message || "Failed to create account", "danger");
+      showToast("Error connecting to server", "danger");
     } finally {
       setLoading(false);
     }
@@ -228,10 +202,11 @@ const Signup: React.FC = () => {
             </div>
 
             <button 
-              onClick={handleGoogleSignup}
-              className="w-full h-14 bg-white text-[#070512] rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-slate-100 transition-all shadow-xl shadow-white/5"
+              disabled
+              className="w-full h-14 bg-white/5 border border-white/10 text-slate-500 rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2 relative overflow-hidden group cursor-not-allowed"
             >
-              <Chrome size={20} /> Sign up with Google
+              Continue with Cypher ID
+              <span className="absolute top-0 right-0 py-0.5 px-2 bg-amber-500/20 text-amber-500 text-[6px] font-bold uppercase tracking-[0.2em] rounded-bl-lg">Coming Soon</span>
             </button>
           </div>
 

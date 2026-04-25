@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
 import { AuditLog } from '../../types';
 import { 
   Download, 
@@ -23,9 +21,9 @@ const AuditLogs: React.FC = () => {
   const fetchLogs = async () => {
     setLoading(true);
     try {
-      const q = query(collection(db, 'auditLogs'), orderBy('timestamp', 'desc'), limit(50));
-      const snapshot = await getDocs(q);
-      const logData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as AuditLog));
+      const response = await fetch('/api/admin/audit-logs');
+      if (!response.ok) throw new Error('Failed to fetch');
+      const logData = await response.json();
       setLogs(logData);
     } catch (err) {
       console.error("Error fetching logs:", err);

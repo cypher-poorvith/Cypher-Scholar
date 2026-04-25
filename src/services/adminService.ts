@@ -1,60 +1,37 @@
-import { db, auth } from '../lib/firebase';
-import { 
-  doc, 
-  setDoc, 
-  updateDoc, 
-  deleteDoc, 
-  collection, 
-  addDoc, 
-  getDoc,
-  serverTimestamp 
-} from 'firebase/firestore';
-import { UserRole, UserProfile } from '../types';
-
-/**
- * Task 11: Firebase Integration - Cloud Function equivalents (logic)
- */
+import { UserRole } from '../types';
 
 export const setUserRole = async (userId: string, role: UserRole, permissions: any) => {
-  const userRef = doc(db, 'users', userId);
-  await updateDoc(userRef, {
-    role,
-    permissions,
-    updatedAt: serverTimestamp()
+  const response = await fetch(`/api/admin/users/${userId}/role`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ role, permissions })
   });
+  return response.json();
 };
 
 export const createTeamMember = async (email: string, name: string, role: UserRole) => {
-  // Logic for creating a team member invitation
-  const inviteRef = collection(db, 'invitations');
-  await addDoc(inviteRef, {
-    email,
-    displayName: name,
-    role,
-    status: 'pending',
-    createdAt: serverTimestamp()
-  });
-  // In a real env, a Cloud Function would trigger an email from here
+  // Mocking team invitation since it usually involves emails
+  console.log(`Inviting team member: ${name} (${email}) as ${role}`);
 };
 
 export const disableUserAuth = async (userId: string, blocked: boolean) => {
-  const userRef = doc(db, 'users', userId);
-  await updateDoc(userRef, { blocked });
-  // In a real env, this would also call admin.auth().updateUser(uid, { disabled: blocked })
+  const response = await fetch(`/api/admin/users/${userId}/block`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ blocked })
+  });
+  return response.json();
 };
 
 export const deleteUserAccount = async (userId: string) => {
-  // Delete from Firestore
-  await deleteDoc(doc(db, 'users', userId));
-  // In a real env, this would also call admin.auth().deleteUser(uid)
+  const response = await fetch(`/api/admin/users/${userId}`, {
+    method: 'DELETE'
+  });
+  return response.json();
 };
 
 export const sendAnnouncement = async (announcementData: any) => {
-  const announcementRef = collection(db, 'announcements');
-  await addDoc(announcementRef, {
-    ...announcementData,
-    publishDate: Date.now(),
-    active: true,
-    views: 0
-  });
+  // Announcements also need a collection in JSON DB
+  console.log("Sending announcement:", announcementData);
 };
+

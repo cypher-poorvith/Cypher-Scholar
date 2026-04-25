@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
-import { db } from '../lib/firebase';
-import { Subject, SubjectCategory } from '../types';
+import { Subject } from '../types';
 import { 
   Users, 
   ShieldCheck, 
@@ -28,9 +26,10 @@ const AdminDashboard: React.FC = () => {
 
   const fetchSubjects = async () => {
     try {
-      const q = query(collection(db, 'subjects'), orderBy('order', 'asc'));
-      const snapshot = await getDocs(q);
-      setSubjects(snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Subject)));
+      const response = await fetch('/api/subjects');
+      if (response.ok) {
+        setSubjects(await response.json());
+      }
     } catch (e) { console.error(e); }
     setLoading(false);
   };
