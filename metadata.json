@@ -1,0 +1,15 @@
+{
+  "name": "Cypher Scholar",
+  "description": "A comprehensive, free educational platform for competitive exams (JEE, NEET, UPSC), school grades (1-12), and engineering courses (B.Tech). Master every subject with expert-curated content, practice material, and performance analytics.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "Firebase Authentication",
+    "Firestore Database",
+    "Performance Analytics",
+    "Glassmorphic UI Design"
+  ]
+}

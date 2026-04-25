@@ -1,0 +1,170 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Comprehensive user information and team roles",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "editor", "viewer", "superadmin"] },
+        "status": { "type": "string" },
+        "permissions": { "type": "object" },
+        "createdAt": { "type": "integer" },
+        "lastLogin": { "type": "integer" },
+        "blocked": { "type": "boolean" },
+        "isActive": { "type": "boolean" },
+        "onboardingComplete": { "type": "boolean" },
+        "devices": { "type": "array" }
+      },
+      "required": ["email", "role"]
+    },
+    "Exam": {
+      "title": "Competitive Exam",
+      "description": "Top-level exam category (e.g., JEE, NEET)",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "code": { "type": "string" },
+        "description": { "type": "string" },
+        "active": { "type": "boolean" }
+      },
+      "required": ["name", "code"]
+    },
+    "Subject": {
+      "title": "Subject",
+      "description": "Major subject area (e.g., Physics, Chemistry)",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "examId": { "type": "string" },
+        "icon": { "type": "string" }
+      },
+      "required": ["name", "examId"]
+    },
+    "Chapter": {
+      "title": "Chapter",
+      "description": "Syllabus chapter within a subject",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "order": { "type": "integer" }
+      },
+      "required": ["name", "subjectId"]
+    },
+    "Topic": {
+      "title": "Topic",
+      "description": "Specific topic within a chapter",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "chapterId": { "type": "string" }
+      },
+      "required": ["name", "chapterId"]
+    },
+    "Question": {
+      "title": "Question Bank",
+      "description": "Individual questions for tests and practice",
+      "type": "object",
+      "properties": {
+        "text": { "type": "string" },
+        "type": { "type": "string", "enum": ["mcq", "integer"] },
+        "difficulty": { "type": "string", "enum": ["easy", "medium", "hard"] },
+        "subjectId": { "type": "string" },
+        "chapterId": { "type": "string" },
+        "topicId": { "type": "string" },
+        "options": { "type": "array" },
+        "correctAnswer": { "type": "string" },
+        "solution": { "type": "string" },
+        "tags": { "type": "array" },
+        "isPYQ": { "type": "boolean" },
+        "year": { "type": "integer" }
+      },
+      "required": ["text", "type", "correctAnswer"]
+    },
+    "MockTest": {
+      "title": "Mock Test",
+      "description": "Full-length or practice tests",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "durationMinutes": { "type": "integer" },
+        "totalMarks": { "type": "integer" },
+        "questionIds": { "type": "array" },
+        "examId": { "type": "string" },
+        "published": { "type": "boolean" }
+      },
+      "required": ["title", "questionIds"]
+    },
+    "TestAttempt": {
+      "title": "Test Attempt",
+      "description": "User's session and scores for a test",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "testId": { "type": "string" },
+        "startedAt": { "type": "integer" },
+        "completedAt": { "type": "integer" },
+        "score": { "type": "number" },
+        "status": { "type": "string", "enum": ["started", "completed", "cancelled"] },
+        "responses": { "type": "object" }
+      },
+      "required": ["userId", "testId", "status"]
+    },
+    "Material": {
+      "title": "Learning Material",
+      "description": "PDFs and Video links",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "type": { "type": "string", "enum": ["pdf", "video"] },
+        "url": { "type": "string" },
+        "chapterId": { "type": "string" },
+        "uploadedBy": { "type": "string" },
+        "timestamp": { "type": "integer" }
+      }
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "exams/{examId}": {
+      "schema": "Exam",
+      "description": "Exam categories"
+    },
+    "subjects/{subjectId}": {
+      "schema": "Subject",
+      "description": "Subjects mapping"
+    },
+    "chapters/{chapterId}": {
+      "schema": "Chapter",
+      "description": "Syllabus chapters"
+    },
+    "topics/{topicId}": {
+      "schema": "Topic",
+      "description": "Chapter topics"
+    },
+    "questions/{questionId}": {
+      "schema": "Question",
+      "description": "Curated questions bank"
+    },
+    "mockTests/{testId}": {
+      "schema": "MockTest",
+      "description": "Mock test definitions"
+    },
+    "users/{userId}/attempts/{attemptId}": {
+      "schema": "TestAttempt",
+      "description": "User performance records"
+    },
+    "materials/{materialId}": {
+      "schema": "Material",
+      "description": "Static learning materials"
+    }
+  }
+}

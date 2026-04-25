@@ -1,0 +1,144 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() { return request.auth != null; }
+    function isEmailVerified() { return isSignedIn() && request.auth.token.provider_id == 'password' ? request.auth.token.email_verified == true : true; }
+    function verified() { return isSignedIn(); } 
+    function isUser(userId) { return isSignedIn() && request.auth.uid == userId; }
+    
+    // RBAC
+    function isSuperadmin() { 
+      let email = request.auth.token.email;
+      return isSignedIn() && (
+        email == 'poorvith519@gmail.com' || 
+        email == 'admin@123.com' || 
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', 'user') == 'superadmin')
+      ); 
+    }
+    
+    function isEditor() {
+      return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', 'user') == 'editor';
+    }
+
+    function canManageContent() {
+      return isSuperadmin() || isEditor();
+    }
+
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // --- Validation Blueprints ---
+    function isValidUser(data) {
+      return data.email is string && data.email.size() <= 256
+        && data.displayName is string && data.displayName.size() <= 128
+        && data.role in ['user', 'editor', 'viewer', 'superadmin']
+        && data.status is string
+        && data.blocked is bool
+        && data.isActive is bool
+        && data.devices is list
+        && data.createdAt is number
+        && data.lastLogin is number
+        && data.onboardingComplete is bool
+        && data.permissions is map
+        && (data.get('phone', null) == null || data.phone is string)
+        && (data.get('photoURL', null) == null || data.photoURL is string);
+    }
+
+    function isValidQuestion(data) {
+      return data.text is string && data.text.size() <= 10000
+        && data.type in ['mcq', 'integer']
+        && data.difficulty in ['easy', 'medium', 'hard']
+        && data.subjectId is string
+        && data.chapterId is string
+        && data.topicId is string
+        && data.options is list
+        && data.correctAnswer is string;
+    }
+
+    function isValidAttempt(data) {
+      return data.userId == request.auth.uid
+        && data.testId is string
+        && data.startedAt is int
+        && data.status in ['started', 'completed', 'cancelled'];
+    }
+
+    // --- Rules ---
+
+    // Users Management
+    match /users/{userId} {
+      allow get: if isUser(userId) || isSuperadmin();
+      allow list: if isSuperadmin();
+      allow create: if isSignedIn() && isValidUser(incoming()) && (
+        (isUser(userId) && (incoming().role == 'user' || incoming().role == 'editor')) ||
+        isSuperadmin()
+      );
+      allow update: if isSignedIn() && (
+        isSuperadmin() ||
+        (isUser(userId) && incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'phone', 'photoURL', 'lastLogin', 'devices', 'isActive', 'onboardingComplete', 'academicDetails']))
+      );
+      allow delete: if isSuperadmin();
+
+      match /progress/{progressId} {
+        allow read, write: if isUser(userId) || isSuperadmin();
+      }
+
+      match /attempts/{attemptId} {
+        allow read: if isUser(userId) || isSuperadmin();
+        allow create: if isUser(userId) && isValidAttempt(incoming());
+        allow update: if isUser(userId) || isSuperadmin();
+      }
+    }
+
+    // Content Tree
+    match /exams/{id} {
+      allow read: if true;
+      allow write: if isSuperadmin();
+    }
+    match /subjects/{id} {
+      allow read: if true;
+      allow write: if isSuperadmin();
+    }
+    match /chapters/{id} {
+      allow read: if true;
+      allow write: if canManageContent();
+    }
+    match /topics/{id} {
+      allow read: if true;
+      allow write: if canManageContent();
+    }
+
+    // Questions pool
+    match /questions/{id} {
+      allow read: if isSignedIn();
+      allow create: if canManageContent() && isValidQuestion(incoming());
+      allow update: if canManageContent();
+      allow delete: if isSuperadmin();
+    }
+
+    // Sessions/Tests
+    match /mockTests/{id} {
+      allow read: if true;
+      allow write: if canManageContent();
+    }
+
+    // Audit Logs
+    match /auditLogs/{logId} {
+      allow create: if isSignedIn();
+      allow read: if isSuperadmin();
+      allow update, delete: if false;
+    }
+
+    // General Content (PDFs/Videos)
+    match /materials/{id} {
+      allow read: if true;
+      allow write: if canManageContent();
+    }
+  }
+}
