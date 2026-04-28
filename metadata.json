@@ -1,6 +1,6 @@
 {
   "name": "Cypher Scholar",
-  "description": "A comprehensive, free educational platform for competitive exams (JEE, NEET, UPSC), school grades (1-12), and engineering courses (B.Tech). Master every subject with expert-curated content, practice material, and performance analytics.",
+  "description": "Premium JEE prep app featuring chapter-wise precision questions, interactive simulations (Physics/Chemistry/Maths), real-time performance analytics, and specialized dropper-track modules.",
   "requestFramePermissions": [
     "camera",
     "microphone",

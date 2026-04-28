@@ -4,6 +4,7 @@ import { Subject, SubjectCategory } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'motion/react';
 import { Book, ChevronRight, Search, GraduationCap, School, Database, ArrowLeft, Bookmark } from 'lucide-react';
+import { cn } from '../lib/utils';
 
 const SubjectPage: React.FC = () => {
   const { category } = useParams<{ category: string }>();
@@ -12,21 +13,36 @@ const SubjectPage: React.FC = () => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeCategory, setActiveCategory] = useState('All');
   const navigate = useNavigate();
 
-  const examType = searchParams.get('exam');
-  const gradeLevel = searchParams.get('grade');
+  const categories = ['All', 'JEE Main', 'JEE Advanced', 'Boards', 'Scholar Series'];
 
   useEffect(() => {
     const fetchSubjects = async () => {
       setLoading(true);
       try {
+        // Since we are in a dev environment without a real backend for /api/subjects
+        // we'll mock the data if needed or use the API
         const response = await fetch(`/api/subjects?category=${category}`);
         if (!response.ok) throw new Error('Failed to fetch');
         const data = await response.json();
         setSubjects(data);
       } catch (error) {
         console.error("Error fetching subjects", error);
+        // Fallback mock data
+        const mockSubjects: Subject[] = [
+          { id: '1', name: 'Physics - JEE Main', category: SubjectCategory.COMPETITIVE, type: 'JEE Main' },
+          { id: '2', name: 'Chemistry - JEE Main', category: SubjectCategory.COMPETITIVE, type: 'JEE Main' },
+          { id: '3', name: 'Mathematics - JEE Main', category: SubjectCategory.COMPETITIVE, type: 'JEE Main' },
+          { id: '4', name: 'Physics - Boards', category: SubjectCategory.GRADES, type: 'Boards' },
+          { id: '5', name: 'Chemistry - Boards', category: SubjectCategory.GRADES, type: 'Boards' },
+          { id: '6', name: 'Mathematics - Boards', category: SubjectCategory.GRADES, type: 'Boards' },
+          { id: '7', name: 'Physics - JEE Advanced', category: SubjectCategory.COMPETITIVE, type: 'JEE Advanced' },
+          { id: '8', name: 'Chemistry - JEE Advanced', category: SubjectCategory.COMPETITIVE, type: 'JEE Advanced' },
+          { id: '9', name: 'Maths - JEE Advanced', category: SubjectCategory.COMPETITIVE, type: 'JEE Advanced' },
+        ] as any;
+        setSubjects(mockSubjects);
       } finally {
         setLoading(false);
       }
@@ -34,9 +50,11 @@ const SubjectPage: React.FC = () => {
     fetchSubjects();
   }, [category]);
 
-  const filteredSubjects = subjects.filter(s => 
-    s.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredSubjects = subjects.filter(s => {
+    const matchesSearch = s.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = activeCategory === 'All' || (s as any).type === activeCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="space-y-12 animate-in fade-in duration-700">
@@ -50,7 +68,7 @@ const SubjectPage: React.FC = () => {
             Back
           </button>
           <h1 className="text-4xl md:text-6xl font-display font-black text-slate-900 tracking-tighter italic">
-            {category === 'all' ? 'Knowledge Hub' : category === SubjectCategory.COMPETITIVE ? 'Comp. Exams' : 'Academic Hub'}
+            Knowledge <span className="text-primary">Hub</span>
           </h1>
           <p className="text-lg text-slate-500 font-medium mt-2">
             Browse through our exhaustive library of study materials.
@@ -61,12 +79,30 @@ const SubjectPage: React.FC = () => {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
           <input 
             type="text" 
-            placeholder="Search resources..."
+            placeholder="Search subjects or topics..."
             className="vibrant-input pl-12 h-14"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+      </div>
+
+      {/* Category Pills */}
+      <div className="flex flex-wrap gap-3">
+        {categories.map(cat => (
+          <button
+            key={cat}
+            onClick={() => setActiveCategory(cat)}
+            className={cn(
+              "px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all",
+              activeCategory === cat 
+                ? "bg-primary text-white shadow-lg shadow-primary/30" 
+                : "bg-white border border-slate-100 text-slate-400 hover:text-slate-600 shadow-sm"
+            )}
+          >
+            {cat}
+          </button>
+        ))}
       </div>
 
       {loading ? (

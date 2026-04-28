@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Authenticated user profile data",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "track": { "type": "string", "enum": ["Class 9", "Class 10", "Class 11", "Class 12", "Dropper"] },
+        "targetExam": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "isAdmin": { "type": "boolean" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Question": {
+      "title": "Practice Question",
+      "description": "Standard JEE level MCQs",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "subject": { "type": "string", "enum": ["Physics", "Chemistry", "Mathematics"] },
+        "chapter": { "type": "string" },
+        "topic": { "type": "string" },
+        "difficulty": { "type": "string", "enum": ["Beginner", "Intermediate", "Advanced"] },
+        "questionText": { "type": "string" },
+        "options": { "type": "array", "items": { "type": "string" } },
+        "correctAnswer": { "type": "string" },
+        "solution": { "type": "string" },
+        "graphics": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "questionText", "correctAnswer"]
+    },
+    "Attempt": {
+      "title": "User Question Attempt",
+      "description": "Record of a user answering a question",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "questionId": { "type": "string" },
+        "selectedOption": { "type": "string" },
+        "isCorrect": { "type": "boolean" },
+        "timeTaken": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "questionId", "isCorrect"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile collection"
+    },
+    "/questions/{questionId}": {
+      "schema": "Question",
+      "description": "Bank of all practice questions"
+    },
+    "/users/{userId}/attempts/{attemptId}": {
+      "schema": "Attempt",
+      "description": "Subcollection of questions attempted by a specific user"
+    }
+  }
+}

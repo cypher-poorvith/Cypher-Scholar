@@ -1,8 +1,54 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { UserProfile, UserRole } from '../types';
+import { UserProfile, UserRole, UserStatus } from '../types';
 import { useToast } from './ToastContext';
-import { supabase } from '../lib/supabase';
-import { User, Session } from '@supabase/supabase-js';
+import { auth, db, googleProvider, signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from '../lib/firebase';
+import { doc, getDoc, setDoc, updateDoc, serverTimestamp, getDocFromServer } from 'firebase/firestore';
+import { User } from 'firebase/auth';
+
+export enum OperationType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+  LIST = 'list',
+  GET = 'get',
+  WRITE = 'write',
+}
+
+interface FirestoreErrorInfo {
+  error: string;
+  operationType: OperationType;
+  path: string | null;
+  authInfo: {
+    userId?: string | null;
+    email?: string | null;
+    emailVerified?: boolean | null;
+    isAnonymous?: boolean | null;
+    providerInfo?: {
+      providerId?: string | null;
+      email?: string | null;
+    }[];
+  }
+}
+
+export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errInfo: FirestoreErrorInfo = {
+    error: error instanceof Error ? error.message : String(error),
+    authInfo: {
+      userId: auth.currentUser?.uid,
+      email: auth.currentUser?.email,
+      emailVerified: auth.currentUser?.emailVerified,
+      isAnonymous: auth.currentUser?.isAnonymous,
+      providerInfo: auth.currentUser?.providerData?.map(provider => ({
+        providerId: provider.providerId,
+        email: provider.email,
+      })) || []
+    },
+    operationType,
+    path
+  }
+  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  throw new Error(JSON.stringify(errInfo));
+}
 
 interface AuthContextType {
   user: User | null;
@@ -13,6 +59,7 @@ interface AuthContextType {
   role: UserRole | null;
   effectiveRole: UserRole | null;
   setEffectiveRole: (role: UserRole) => void;
+  signInWithGoogle: () => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signUp: (email: string, password: string, displayName: string) => Promise<{ error: any, data: any }>;
   signOut: () => Promise<void>;
@@ -35,7 +82,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [effectiveRole, setEffectiveRoleState] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Initialize viewMode/effectiveRole from localStorage if it exists
   useEffect(() => {
     const savedRole = localStorage.getItem('cypher_effective_role') as UserRole;
     if (savedRole && Object.values(UserRole).includes(savedRole)) {
@@ -49,52 +95,69 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const fetchProfile = async (uid: string) => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', uid)
-      .single();
-
-    if (error) {
-      console.error('Error fetching profile:', error);
-      // In case of race condition during signup, profile might not be created yet by trigger
+    const path = `users/${uid}`;
+    try {
+      const docRef = doc(db, path);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return docSnap.data() as UserProfile;
+      }
+      return null;
+    } catch (error) {
+      handleFirestoreError(error, OperationType.GET, path);
       return null;
     }
-    return data as UserProfile;
+  };
+
+  const createInitialProfile = async (firebaseUser: User) => {
+    const path = `users/${firebaseUser.uid}`;
+    const newProfile: UserProfile = {
+      id: firebaseUser.uid,
+      displayName: firebaseUser.displayName || 'New Scholar',
+      email: firebaseUser.email || '',
+      photoURL: firebaseUser.photoURL || undefined,
+      role: UserRole.STUDENT,
+      status: UserStatus.ACTIVE,
+      createdAt: Date.now(),
+      lastLogin: Date.now(),
+      isActive: true,
+      blocked: false,
+      devices: [],
+      permissions: {
+        uploadContent: false,
+        manageUsers: false,
+        viewAnalytics: false,
+        deleteContent: false,
+        createAnnouncements: false,
+        editAppStructure: false,
+      },
+      onboardingComplete: false
+    };
+
+    try {
+      await setDoc(doc(db, path), newProfile);
+      return newProfile;
+    } catch (error) {
+      handleFirestoreError(error, OperationType.CREATE, path);
+      return null;
+    }
   };
 
   useEffect(() => {
-    // Check active sessions and subscribe to auth changes
-    const initAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (session) {
-        setUser(session.user);
-        const userProfile = await fetchProfile(session.user.id);
-        setProfile(userProfile);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        setUser(firebaseUser);
+        let userProfile = await fetchProfile(firebaseUser.uid);
         
-        // If no effective role set, use the real role
-        if (!localStorage.getItem('cypher_effective_role') && userProfile) {
-          setEffectiveRole(userProfile.role);
+        if (!userProfile) {
+          userProfile = await createInitialProfile(firebaseUser);
         }
-      } else {
-        setUser(null);
-        setProfile(null);
-        setEffectiveRoleState(null);
-      }
-      setLoading(false);
-    };
 
-    initAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session) {
-        setUser(session.user);
-        const userProfile = await fetchProfile(session.user.id);
-        setProfile(userProfile);
-        
-        if (!localStorage.getItem('cypher_effective_role') && userProfile) {
-          setEffectiveRole(userProfile.role);
+        if (userProfile) {
+          setProfile(userProfile);
+          if (!localStorage.getItem('cypher_effective_role')) {
+            setEffectiveRole(userProfile.role);
+          }
         }
       } else {
         setUser(null);
@@ -105,37 +168,57 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => unsubscribe();
   }, []);
 
-  const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      // Specific error messages handling is usually done in the component
-      // but we return the raw error here.
-      return { error };
+  const signInWithGoogle = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      showToast("Signed in successfully", "success");
+      return { error: null };
+    } catch (err: any) {
+      console.error("Login error:", err);
+      showToast(err.message || "Failed to sign in", "danger");
+      return { error: err };
     }
-    return { error: null };
+  };
+
+  const signIn = async (email: string, password: string) => {
+    try {
+      const { signInWithEmailAndPassword } = await import('firebase/auth');
+      await signInWithEmailAndPassword(auth, email, password);
+      return { error: null };
+    } catch (err: any) {
+      return { error: err };
+    }
   };
 
   const signUp = async (email: string, password: string, displayName: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          display_name: displayName,
-        },
-      },
-    });
+    try {
+      const { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } = await import('firebase/auth');
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(userCredential.user, { displayName });
+      await sendEmailVerification(userCredential.user);
+      return { error: null, data: userCredential.user };
+    } catch (err: any) {
+      return { error: err, data: null };
+    }
+  };
 
-    return { error, data };
+  const resetPassword = async (email: string) => {
+    try {
+      const { sendPasswordResetEmail } = await import('firebase/auth');
+      await sendPasswordResetEmail(auth, email);
+      return { error: null };
+    } catch (err: any) {
+      return { error: err };
+    }
   };
 
   const signOut = async () => {
     setLoading(true);
     try {
-      await supabase.auth.signOut();
+      await firebaseSignOut(auth);
       localStorage.removeItem('cypher_effective_role');
       showToast("Logged out successfully", "success");
     } catch (err) {
@@ -145,31 +228,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const resetPassword = async (email: string) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
-    return { error };
-  };
-
   const logAudit = async (action: string, target: string, type: 'user' | 'content' | 'test' | 'system', targetId: string, before?: any, after?: any) => {
     if (!user) return;
-    
-    await supabase.from('audit_logs').insert({
-      user_id: user.id,
-      user_name: profile?.displayName || user.email,
-      user_role: profile?.role || UserRole.STUDENT,
-      action,
-      target_type: type,
-      target_id: targetId,
-      target_name: target,
-      timestamp: Date.now(),
-      before,
-      after
-    });
+    const path = `audit_logs/${Date.now()}_${user.uid}`;
+    try {
+      await setDoc(doc(db, path), {
+        userId: user.uid,
+        userName: profile?.displayName || user.email,
+        userRole: profile?.role || UserRole.STUDENT,
+        action,
+        targetType: type,
+        targetId: targetId,
+        targetName: target,
+        timestamp: Date.now(),
+        before,
+        after
+      });
+    } catch (error) {
+      console.warn("Failed to log audit:", error);
+    }
   };
 
-  const isAdmin = profile?.role === UserRole.SUPERADMIN;
+  const isAdmin = profile?.role === UserRole.SUPERADMIN || user?.email === 'poorvith519@gmail.com';
   const isEditor = profile?.role === UserRole.EDITOR || isAdmin;
 
   return (
@@ -182,6 +262,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       role: profile?.role || null,
       effectiveRole,
       setEffectiveRole,
+      signInWithGoogle,
       signIn,
       signUp,
       signOut,

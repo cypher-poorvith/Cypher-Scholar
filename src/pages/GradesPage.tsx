@@ -7,16 +7,13 @@ const GradesPage: React.FC = () => {
   const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
 
   const gradeCategories = [
-    { id: '1-8', label: 'Grades 1-8', sub: 'Primary Education', icon: '📖', color: 'text-indigo-400', bg: 'bg-indigo-400/10' },
-    { id: '9-10', label: 'Grades 9-10', sub: 'Secondary Education', icon: '📚', color: 'text-cyan-400', bg: 'bg-cyan-400/10' },
-    { id: '11-12', label: 'Grades 11-12', sub: 'Senior Secondary', icon: '🎓', color: 'text-purple-400', bg: 'bg-purple-400/10' },
-    { id: 'btech', label: 'B.Tech / UG', sub: 'Engineering', icon: '🔬', color: 'text-orange-400', bg: 'bg-orange-400/10' },
+    { id: '11', label: 'Grade 11', sub: 'JEE Prep Year 1', icon: '📖', color: 'text-indigo-400', bg: 'bg-indigo-400/10' },
+    { id: '12', label: 'Grade 12', sub: 'JEE Prep Year 2', icon: '🎓', color: 'text-purple-400', bg: 'bg-purple-400/10' },
+    { id: 'dropper', label: 'Droppers', sub: 'JEE Dedicated Prep', icon: '🚀', color: 'text-orange-400', bg: 'bg-orange-400/10' },
   ];
 
   const streams = [
-    { title: 'Science Stream', desc: 'PCM, PCB, PCMB', items: ['Physics', 'Chemistry', 'Math', 'Biology'], color: 'border-indigo-500' },
-    { title: 'Commerce Stream', desc: 'Accountancy, BST', items: ['Accountancy', 'Economics', 'Business Studies'], color: 'border-cyan-500' },
-    { title: 'Arts Stream', desc: 'History, Pol Sci', items: ['History', 'Political Science', 'Sociology'], color: 'border-purple-500' },
+    { title: 'PCM Stream', desc: 'Physics, Chemistry, Maths', items: ['Physics', 'Chemistry', 'Mathematics'], color: 'border-indigo-500' },
   ];
 
   return (

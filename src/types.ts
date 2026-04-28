@@ -44,11 +44,17 @@ export interface UserProfile {
   };
   onboardingComplete?: boolean;
   academicDetails?: {
-    grade: string;
+    exams?: string[];
+    situation?: string;
+    weakTopics?: string[];
+    studyGoal?: string;
+    notificationsEnabled?: boolean;
+    studyTime?: string;
+    grade?: string;
     stream?: string;
     year?: string;
     branch?: string;
-    targets: string[];
+    targets?: string[];
     institution?: string;
     city?: string;
   };

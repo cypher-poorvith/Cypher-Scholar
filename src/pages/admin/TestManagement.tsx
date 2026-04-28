@@ -146,7 +146,7 @@ const TestManagement: React.FC = () => {
                    <select className="w-full h-14 bg-[#121021] border border-white/10 rounded-2xl px-6 text-white font-bold">
                       <option>JEE Main</option>
                       <option>JEE Advanced</option>
-                      <option>NEET UG</option>
+
                    </select>
                 </div>
                 <div className="space-y-2">

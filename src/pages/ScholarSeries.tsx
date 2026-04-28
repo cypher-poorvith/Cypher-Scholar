@@ -131,7 +131,7 @@ const ScholarSeries: React.FC = () => {
       {/* Filters & Search */}
       <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
         <div className="vibrant-card p-1.5 flex flex-wrap gap-2 bg-white border border-slate-100 shadow-sm w-full lg:w-auto overflow-x-auto">
-          {['All', 'JEE Main', 'NEET', 'Advanced'].map(cat => (
+          {['All', 'JEE Main', 'Advanced'].map(cat => (
             <button 
               key={cat}
               onClick={() => setFilter(cat)}

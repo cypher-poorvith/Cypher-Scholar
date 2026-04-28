@@ -1,255 +1,276 @@
 import React from 'react';
-import { motion } from 'motion/react';
 import { useAuth } from '../context/AuthContext';
-import { 
-  Flame, 
-  ClipboardList, 
-  Timer, 
-  CheckCircle, 
-  Play, 
-  Bookmark, 
-  Calendar,
-  ChevronRight,
-  TrendingUp,
-  Trophy,
-  Brain,
-  Search,
-  Zap
-} from 'lucide-react';
-import { UserRole } from '../types';
 import { Link } from 'react-router-dom';
+import { motion } from 'motion/react';
 
 const Dashboard: React.FC = () => {
-  const { user, profile } = useAuth();
+  const { profile } = useAuth();
 
-  // If user is admin/editor, we might show different things, but for now focus on the requested Student Design
-  // as Dashboard.tsx is primarily for students in many LMS apps.
-  
   return (
-    <div className="flex-1 w-full max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      {/* Top Banner & Stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <section className="lg:col-span-2 vibrant-card p-8 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 bg-gradient-to-br from-white to-slate-50 border-l-8 border-l-primary">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 animate-pulse"></div>
-          <div className="z-10 flex-1">
-            <h2 className="text-3xl font-display font-black text-slate-900 mb-2 tracking-tight">Welcome back, {profile?.displayName?.split(' ')[0] || 'Scholar'}!</h2>
-            <p className="text-lg text-slate-500 font-medium mb-6">Your next official Scholar Mock Test is in <span className="text-primary font-bold underline underline-offset-4 decoration-primary/30">2 days</span>.</p>
-            <div className="flex gap-4">
-              <Link to="/scholar-series">
-                <button className="btn-primary px-8 py-3.5 flex items-center gap-2">
-                    Scholar Series
-                    <Trophy size={16} />
-                </button>
-              </Link>
-              <Link to="/results">
-                <button className="btn-secondary px-8 py-3.5">
-                    View Results
-                </button>
-              </Link>
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.4 }}
+      className="p-6 sm:p-10 space-y-6"
+    >
+      {/* Welcome Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.1 }}
+          className="glass-panel nh border-l-[6px] border-l-pr relative overflow-hidden flex justify-between items-center group"
+        >
+          <div className="absolute -top-10 -right-10 w-32 h-32 bg-pr/5 rounded-full blur-[30px] pointer-events-none group-hover:scale-150 transition-transform duration-700" />
+          <div className="relative z-10 flex-1">
+            <div className="badge badge-primary mb-3">Dropper · JEE 2026</div>
+            <h2 className="text-[1.8rem] font-black mb-2 leading-tight uppercase tracking-tight">
+              Welcome back, <span className="gradient-text">{profile?.displayName?.split(' ')[0] || 'Scholar'}</span>!
+            </h2>
+            <p className="text-tx-muted text-[0.85rem] mb-6 leading-[1.6] font-bold uppercase tracking-wide opacity-80">
+              JEE Advanced in <strong className="text-pr">20 days</strong>. You're in the execution sprint. 💪
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link to="/practice" className="btn-primary h-[38px] px-6 text-[0.75rem]">Start Practicing →</Link>
+              <Link to="/tests/configure" className="btn-secondary h-[38px] px-6 text-[0.75rem]">Mock Test</Link>
             </div>
           </div>
-          <div className="hidden lg:block z-10">
-             <div className="w-40 h-40 bg-primary/5 rounded-[40px] flex items-center justify-center relative overflow-hidden group border border-primary/10 shadow-inner">
-                <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <Trophy size={64} className="text-primary group-hover:scale-110 transition-all duration-500" />
-             </div>
+          <div className="text-[4rem] shrink-0 ml-4 group-hover:rotate-12 transition-transform duration-500">🏆</div>
+        </motion.div>
+        
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="glass-panel nh border-t-[6px] border-t-sec"
+        >
+          <p className="label-sm mb-2 opacity-60">Scholar Standing</p>
+          <div className="text-[2.2rem] font-black mb-2 leading-none uppercase tracking-tight">Global <span className="text-sec">#45</span></div>
+          <p className="label-sm mb-6 leading-none text-tx-dim">Top 2% of Cypher Scholars</p>
+          
+          <div className="flex gap-6">
+            <div className="text-center">
+              <div className="font-display text-[1.4rem] font-black text-phy mb-1">78%</div>
+              <p className="label-sm text-[0.6rem] opacity-70">Physics</p>
+              <div className="w-12 h-1 bg-phy/20 mx-auto rounded-full mt-1" />
+            </div>
+            <div className="text-center">
+              <div className="font-display text-[1.4rem] font-black text-chm mb-1">85%</div>
+              <p className="label-sm text-[0.6rem] opacity-70">Chemistry</p>
+              <div className="w-12 h-1 bg-chm/20 mx-auto rounded-full mt-1" />
+            </div>
+            <div className="text-center">
+              <div className="font-display text-[1.4rem] font-black text-mth mb-1">62%</div>
+              <p className="label-sm text-[0.6rem] opacity-70">Maths</p>
+              <div className="w-12 h-1 bg-mth/20 mx-auto rounded-full mt-1" />
+            </div>
           </div>
-        </section>
-
-        <section className="vibrant-card p-8 border-t-8 border-t-green-500 flex flex-col justify-between">
-           <div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Scholar Standing</p>
-              <h3 className="text-4xl font-display font-black text-slate-900 tracking-tight">Global <span className="text-green-500">#45</span></h3>
-              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-2">Top 2% of Cypher Scholars</p>
-           </div>
-           <div className="flex items-center gap-4 mt-6">
-              <div className="flex -space-x-3">
-                 {[1,2,3].map(i => (
-                    <img key={i} src={`https://i.pravatar.cc/40?u=${i}`} className="w-8 h-8 rounded-full border-2 border-white bg-slate-100" alt="" />
-                 ))}
-                 <div className="w-8 h-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[8px] font-bold text-slate-500">+12</div>
-              </div>
-              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Compete with friends</span>
-           </div>
-        </section>
+        </motion.div>
       </div>
 
-      {/* Stats Grid */}
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Stats Row */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {[
-          { label: "Study Streak", value: "7", unit: "days", icon: <Flame className="text-orange-500" />, color: "bg-orange-500" },
-          { label: "Tests Taken", value: "12", unit: "", icon: <CheckCircle className="text-cyan-500" />, color: "bg-cyan-500" },
-          { label: "Time Studied", value: "24h 35m", unit: "", icon: <Timer className="text-primary" />, color: "bg-primary" },
-          { label: "Questions Solved", value: "456", unit: "", icon: <Brain className="text-green-500" />, color: "bg-green-500" },
+          { label: 'Tests Taken', value: '12', icon: '✅', color: 'bg-acc', pct: 45 },
+          { label: 'Study Hours', value: '24h', icon: '⏱', color: 'bg-pr', pct: 60 },
+          { label: 'Qs Solved', value: '456', icon: '🧠', color: 'bg-sec', pct: 55 },
+          { label: 'Accuracy', value: '74%', icon: '🎯', color: 'bg-ig-orange', pct: 74 },
         ].map((stat, i) => (
-          <div key={i} className="vibrant-card rounded-xl p-6 flex flex-col gap-4 group">
+          <motion.div 
+            key={i} 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 * i + 0.3 }}
+            className="glass-panel nh flex flex-col gap-3 p-5 group hover:border-pr/30"
+          >
             <div className="flex justify-between items-center">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{stat.label}</span>
-              <div className="group-hover:rotate-12 transition-transform">
-                {stat.icon}
-              </div>
+              <span className="label-sm opacity-60 group-hover:opacity-100 transition-opacity">{stat.label}</span>
+              <span className="group-hover:scale-125 transition-transform">{stat.icon}</span>
             </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-display font-black text-slate-900 tracking-tight">{stat.value}</span>
-              <span className="text-xs font-bold text-slate-400 uppercase">{stat.unit}</span>
+            <div className="text-[2.2rem] font-black leading-none mb-1 group-hover:scale-105 transition-transform origin-left">{stat.value}</div>
+            <div className="w-full bg-surface-subtle rounded-full h-[6px] overflow-hidden">
+               <motion.div 
+                 initial={{ width: 0 }}
+                 animate={{ width: `${stat.pct}%` }}
+                 transition={{ duration: 1, ease: "easeOut", delay: 0.5 + i * 0.1 }}
+                 className={`h-full ${stat.color} shadow-sm shadow-black/10`} 
+               />
             </div>
-            <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden shadow-inner">
-              <div className={`${stat.color} h-full w-1/2 rounded-full`}></div>
-            </div>
-          </div>
+          </motion.div>
         ))}
-      </section>
+      </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        {/* Left Col: Learning & Tasks */}
-        <div className="xl:col-span-2 flex flex-col gap-8">
+      {/* Main Grid content */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        {/* Left Col */}
+        <div className="space-y-6">
           {/* Continue Learning */}
-          <section className="vibrant-card rounded-xl p-6 flex flex-col gap-6">
-            <div className="flex justify-between items-center border-b border-slate-100 pb-4">
-              <h3 className="text-lg font-bold text-slate-900 uppercase tracking-tight">Continue Learning</h3>
-              <Link to="/subjects/grades" className="text-xs font-bold text-primary hover:underline uppercase tracking-widest">View All</Link>
+          <div className="glass-panel nh p-8">
+            <div className="flex justify-between items-center border-b border-border-subtle pb-4 mb-6">
+              <span className="font-display text-[1rem] font-black uppercase tracking-tighter italic">🚀 Continue Learning</span>
+              <Link to="/practice" className="text-[0.7rem] font-black uppercase tracking-widest text-pr hover:underline">View Journey</Link>
             </div>
-            <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+            <div className="flex gap-5 overflow-x-auto pb-2 no-scrollbar">
               {[
-                { subject: "Physics", title: "Electromagnetic Induction - Core Concepts", progress: 65, color: "text-blue-500", bg: "bg-blue-50" },
-                { subject: "Mathematics", title: "Integral Calculus: Advanced Practice Set", progress: 30, color: "text-violet-500", bg: "bg-violet-50" },
-                { subject: "Chemistry", title: "Organic Reactions: Mechanisms Part 2", progress: 15, color: "text-green-500", bg: "bg-green-50" },
+                { sub: 'Physics', ch: '1D Kinematics', pct: 65, color: 'bg-phy', badge: 'badge-physics' },
+                { sub: 'Maths', ch: 'Limits & Continuity', pct: 30, color: 'bg-mth', badge: 'badge-maths' },
+                { sub: 'Chemistry', ch: 'Atomic Structure', pct: 15, color: 'bg-chm', badge: 'badge-chemistry' },
               ].map((item, i) => (
-                <div key={i} className="min-w-[300px] bg-white border border-slate-100 rounded-xl p-5 flex flex-col gap-4 hover:border-primary/20 hover:shadow-md transition-all cursor-pointer group">
-                  <div className="flex justify-between items-start">
-                    <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${item.bg} ${item.color}`}>{item.subject}</span>
-                    <Bookmark size={14} className="text-slate-300 group-hover:text-primary transition-colors" />
-                  </div>
-                  <h4 className="text-sm font-bold text-slate-800 line-clamp-2 leading-snug">{item.title}</h4>
-                  <div className="mt-auto">
-                    <div className="flex justify-between items-center mb-2">
-                       <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{item.progress}% Complete</span>
-                    </div>
-                    <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                      <div className={`h-full rounded-full transition-all duration-1000 ${item.color.replace('text-', 'bg-')}`} style={{ width: `${item.progress}%` }}></div>
-                    </div>
-                  </div>
+                <div key={i} className="min-w-[280px] bg-surface-subtle border border-border-subtle rounded-[18px] p-5 cursor-pointer hover:border-pr/40 transition-all group relative overflow-hidden">
+                   <div className="absolute top-0 right-0 w-16 h-16 bg-[var(--grad)] opacity-[0.02] rounded-bl-full pointer-events-none" />
+                   <div className="flex justify-between mb-4">
+                     <span className={`badge ${item.badge}`}>{item.sub}</span>
+                     <span className="opacity-40 group-hover:opacity-100 transition-opacity">🔖</span>
+                   </div>
+                   <p className="text-[0.95rem] font-black mb-4 leading-tight group-hover:text-pr tracking-tight">{item.ch}</p>
+                   <div className="flex justify-between items-center mb-1.5">
+                     <p className="label-sm text-[0.55rem] font-bold opacity-60">{item.pct}% Deep Link</p>
+                     <p className="label-sm text-[0.55rem] font-black text-pr">{item.pct}%</p>
+                   </div>
+                   <div className="w-full bg-surface-card rounded-full h-[6px] overflow-hidden">
+                     <motion.div 
+                       initial={{ width: 0 }}
+                       animate={{ width: `${item.pct}%` }}
+                       className={`h-full ${item.color}`} 
+                     />
+                   </div>
                 </div>
               ))}
             </div>
-          </section>
+          </div>
 
           {/* Today's Focus */}
-          <section className="vibrant-card rounded-xl p-6 flex flex-col gap-4">
-            <h3 className="text-lg font-bold text-slate-900 uppercase tracking-tight border-b border-slate-100 pb-4">Today's Focus</h3>
-            <ul className="flex flex-col gap-3">
-              {[
-                { title: "Review Chemistry Chapter 3 Notes", time: "8:00 PM", priority: false },
-                { title: "Take Physics Mock Test #4", time: "High Priority", priority: true },
-                { title: "Watch Math Integral Calculus Video", time: "9:30 PM", priority: false },
-              ].map((task, i) => (
-                <li key={i} className="flex items-center gap-4 bg-slate-50/50 border border-slate-100 rounded-xl p-4 hover:bg-slate-50 hover:border-primary/20 transition-all group">
-                  <div className="w-5 h-5 rounded border border-slate-200 flex items-center justify-center cursor-pointer hover:border-primary transition-colors">
-                    <div className="w-2.5 h-2.5 bg-primary rounded-sm opacity-0 group-hover:opacity-30 transition-opacity" />
-                  </div>
+          <div className="glass-panel nh p-8">
+            <div className="font-display text-[1rem] font-black uppercase tracking-tighter border-b border-border-subtle pb-4 mb-6 italic">🎯 Today's Focus</div>
+            <div className="space-y-3">
+               <div className="flex items-center gap-4 px-4 py-4 bg-surface-subtle border border-border-subtle rounded-[14px] hover:border-pr/20 transition-all cursor-default group">
+                  <div className="w-[18px] h-[18px] rounded-md border-2 border-border-strong shrink-0 group-hover:border-pr/40 transition-colors" />
                   <div className="flex-1">
-                    <p className="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">{task.title}</p>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{task.time}</p>
+                    <p className="text-[0.85rem] font-black leading-tight tracking-tight">Review Inorganic Chemistry — p-Block</p>
+                    <p className="label-sm text-[0.6rem] font-bold opacity-60">Your Strength Area</p>
                   </div>
-                  {task.priority && (
-                    <span className="bg-primary/10 text-primary px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest border border-primary/20 animate-pulse">Mock</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </section>
+               </div>
+               <div className="flex items-center gap-4 px-4 py-4 bg-pr/5 border-2 border-pr/40 rounded-[14px] hover:border-pr transition-all cursor-default relative group">
+                  <div className="w-[18px] h-[18px] rounded-md border-2 border-pr shrink-0 bg-pr shadow-sm shadow-pr/30" />
+                  <div className="flex-1">
+                    <p className="text-[0.85rem] font-black leading-tight tracking-tight text-pr">Math: Integral Calculus (Mathongo)</p>
+                    <p className="label-sm text-[0.6rem] text-pr font-black uppercase">Weak Area — High Priority</p>
+                  </div>
+                  <span className="badge badge-primary scale-90">Focus</span>
+               </div>
+               <div className="flex items-center gap-4 px-4 py-4 bg-surface-subtle border border-border-subtle rounded-[14px] hover:border-pr/20 transition-all cursor-default group">
+                  <div className="w-[18px] h-[18px] rounded-md border-2 border-border-strong shrink-0 group-hover:border-pr/40 transition-colors" />
+                  <div className="flex-1">
+                    <p className="text-[0.85rem] font-black leading-tight tracking-tight">Physics: EMI Mock (Canvas Classes)</p>
+                    <p className="label-sm text-[0.6rem] font-bold opacity-60">Evening session</p>
+                  </div>
+               </div>
+            </div>
+          </div>
         </div>
 
-        {/* Right Col: Performance & Calendar */}
-        <div className="flex flex-col gap-8">
-          {/* Subject Mastery Visual */}
-          <section className="vibrant-card rounded-xl p-6 flex flex-col items-center justify-center min-h-[320px] border-t-8 border-t-primary">
-            <h3 className="text-lg font-bold text-slate-900 uppercase tracking-tight w-full text-left mb-6 flex items-center gap-2">
-              <TrendingUp size={20} className="text-primary" />
-              Subject Mastery
-            </h3>
-            <div className="relative w-44 h-44 flex items-center justify-center">
-              {/* Radar Chart Background */}
-              <div className="absolute inset-0 border border-slate-100 rounded-full"></div>
-              <div className="absolute inset-8 border border-slate-100 rounded-full"></div>
-              <div className="absolute inset-16 border border-slate-100 rounded-full"></div>
-              
-              {/* Data Polygon Approximation */}
-              <svg className="w-full h-full -rotate-90 scale-110 drop-shadow-lg">
-                <polygon 
-                  points="100,20 160,80 140,160 60,150 30,70" 
-                  className="fill-primary/20 stroke-primary stroke-2"
-                />
-              </svg>
-              
-              <div className="absolute top-0 -mt-6 text-[10px] font-bold text-blue-500 uppercase tracking-widest">Physics</div>
-              <div className="absolute bottom-0 -mb-6 text-[10px] font-bold text-green-500 uppercase tracking-widest">Chemistry</div>
-              <div className="absolute right-0 -mr-10 text-[10px] font-bold text-violet-500 uppercase tracking-widest">Math</div>
-            </div>
-            <div className="mt-10 flex gap-4">
-               <div className="flex flex-col items-center">
-                  <span className="text-xl font-bold text-slate-900">84%</span>
-                  <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Overall</span>
-               </div>
-               <div className="w-px h-8 bg-slate-100" />
-               <div className="flex flex-col items-center">
-                  <span className="text-xl font-bold text-primary">+12%</span>
-                  <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Progress</span>
-               </div>
-            </div>
-          </section>
+        {/* Right Col */}
+        <div className="space-y-6">
+           {/* Subject Mastery */}
+           <div className="glass-panel nh border-t-[6px] border-t-pr p-8">
+              <div className="font-display text-[1rem] font-black uppercase tracking-tighter mb-6 italic">📊 Mastery Dynamics</div>
+              <div className="space-y-5">
+                 <div>
+                    <div className="flex justify-between items-center mb-1.5">
+                       <span className="text-[0.85rem] font-black uppercase tracking-widest text-tx-muted">Physics</span>
+                       <span className="text-[0.85rem] font-black text-phy">78%</span>
+                    </div>
+                    <div className="w-full bg-surface-subtle rounded-full h-[6px] overflow-hidden">
+                       <motion.div initial={{ width: 0 }} animate={{ width: '78%' }} className="h-full bg-phy" />
+                    </div>
+                 </div>
+                 <div>
+                    <div className="flex justify-between items-center mb-1.5">
+                       <span className="text-[0.85rem] font-black uppercase tracking-widest text-tx-muted">Chemistry</span>
+                       <span className="text-[0.85rem] font-black text-chm">85%</span>
+                    </div>
+                    <div className="w-full bg-surface-subtle rounded-full h-[6px] overflow-hidden">
+                       <motion.div initial={{ width: 0 }} animate={{ width: '85%' }} className="h-full bg-chm" />
+                    </div>
+                 </div>
+                 <div>
+                    <div className="flex justify-between items-center mb-1.5">
+                       <span className="text-[0.85rem] font-black uppercase tracking-widest text-tx-muted">Mathematics</span>
+                       <span className="text-[0.85rem] font-black text-mth">62%</span>
+                    </div>
+                    <div className="w-full bg-surface-subtle rounded-full h-[6px] overflow-hidden">
+                       <motion.div initial={{ width: 0 }} animate={{ width: '62%' }} className="h-full bg-mth" />
+                    </div>
+                 </div>
+              </div>
+              <div className="mt-8 pt-8 border-t border-border-subtle flex gap-8">
+                 <div className="text-center flex-1">
+                    <div className="font-display text-[1.5rem] font-black italic tracking-tighter">84%</div>
+                    <p className="label-sm text-[0.6rem] font-bold uppercase opacity-60">Overall IQ</p>
+                 </div>
+                 <div className="w-[1px] h-10 bg-border-subtle self-center" />
+                 <div className="text-center flex-1">
+                    <div className="font-display text-[1.5rem] font-black text-pr italic tracking-tighter">+12%</div>
+                    <p className="label-sm text-[0.6rem] font-bold uppercase opacity-60">This Week</p>
+                 </div>
+              </div>
+           </div>
 
-          {/* Upcoming Tests */}
-          <section className="vibrant-card rounded-xl p-6 flex flex-col gap-4">
-            <div className="flex justify-between items-center border-b border-slate-100 pb-4">
-              <h3 className="text-lg font-bold text-slate-900 uppercase tracking-tight">Upcoming Tests</h3>
-              <Calendar size={18} className="text-slate-300" />
-            </div>
-            <div className="flex flex-col gap-4">
-              {[
-                { date: "15", month: "OCT", title: "JEE Mock Exam - Full Syllabus", time: "9:00 AM - 12:00 PM", color: "border-primary", label: "Mock" },
-                { date: "22", month: "OCT", title: "Unit Test: Mathematics", time: "10:00 AM - 11:30 AM", color: "border-secondary", label: "Unit" },
-              ].map((test, i) => (
-                <div key={i} className={`flex items-center gap-4 border-l-4 ${test.color} pl-4 group cursor-pointer`}>
-                  <div className="flex flex-col items-center bg-slate-50 px-3 py-2 rounded-xl border border-slate-100 group-hover:bg-primary/5 transition-all">
-                    <span className="text-[10px] text-primary font-bold tracking-widest">{test.month}</span>
-                    <span className="text-xl font-display font-black text-slate-900">{test.date}</span>
+           {/* Exam Dates */}
+           <div className="glass-panel nh p-8">
+              <div className="flex justify-between items-center border-b border-border-subtle pb-4 mb-6">
+                 <span className="font-display text-[1rem] font-black uppercase tracking-tighter italic">📅 Calendar</span>
+                 <span className="text-sm opacity-40">JEE Tracker</span>
+              </div>
+              <div className="space-y-5">
+                {[
+                  { m: 'MAY', d: '17', title: 'JEE Advanced 2026', time: '9:00 AM – 12:00 PM', color: 'border-l-pr' },
+                  { m: 'MAY', d: '23', title: 'MET Phase 2', time: '10:00 AM – 11:30 AM', color: 'border-l-chm' },
+                  { m: 'APR', d: '30', title: 'VITEEE Entrance', time: 'All day event', color: 'border-l-mth' },
+                ].map((exam, i) => (
+                  <div key={i} className={`flex gap-4 border-l-[4px] ${exam.color} pl-4 group transition-all items-center`}>
+                    <div className="bg-surface-subtle border border-border-subtle rounded-[12px] px-3 py-2 text-center shrink-0 min-w-[58px] shadow-sm">
+                      <p className={`text-[0.6rem] font-black ${exam.color.replace('border-l-', 'text-')}`}>{exam.m}</p>
+                      <p className="font-display text-[1.4rem] font-black leading-tight tracking-tighter">{exam.d}</p>
+                    </div>
+                    <div>
+                      <p className="text-[0.95rem] font-black leading-tight group-hover:text-pr transition-colors tracking-tight">{exam.title}</p>
+                      <p className="label-sm text-[0.65rem] mt-1 font-bold opacity-60 uppercase">{exam.time}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-bold text-slate-700 group-hover:text-primary transition-colors">{test.title}</p>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none mt-1">{test.time}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+                ))}
+              </div>
+           </div>
         </div>
       </div>
 
-      {/* Achievements Section */}
-      <section className="vibrant-card rounded-xl p-6 mb-8">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
-          <h3 className="text-lg font-bold text-slate-900 uppercase tracking-tight">Unlocked Achievements</h3>
-          <Trophy size={18} className="text-amber-500" />
+      {/* Achievements Row */}
+      <div className="glass-panel nh p-8">
+        <div className="flex justify-between items-center border-b border-border-subtle pb-4 mb-6">
+           <span className="font-display text-[1rem] font-black uppercase tracking-tighter italic">🏆 Hall of Fame</span>
+           <Link to="/achievements" className="text-[0.7rem] font-black uppercase tracking-widest text-pr hover:underline">Unlocked</Link>
         </div>
-        <div className="flex gap-8 overflow-x-auto no-scrollbar py-2">
-          {[
-            { label: "First 100 Qs", icon: <CheckCircle className="text-amber-500" size={32} />, unlocked: true, color: "from-amber-50 to-orange-50 border-amber-200 shadow-sm" },
-            { label: "Physics Pro", icon: <Brain className="text-primary" size={32} />, unlocked: true, color: "from-blue-50 to-indigo-50 border-primary/20 shadow-sm" },
-            { label: "10 Day Streak", icon: <Flame className="text-orange-500" size={32} />, unlocked: true, color: "from-orange-50 to-red-50 border-orange-200 shadow-sm" },
-            { label: "Math Wizard", icon: <Zap className="text-slate-300" size={32} />, unlocked: false, color: "bg-slate-50 border-slate-100" },
-            { label: "Library Scout", icon: <Bookmark className="text-slate-300" size={32} />, unlocked: false, color: "bg-slate-50 border-slate-100" },
-          ].map((achievement, i) => (
-            <div key={i} className={`flex flex-col items-center gap-3 min-w-[120px] transition-all ${achievement.unlocked ? 'opacity-100' : 'opacity-40 grayscale'}`}>
-              <div className={`w-16 h-16 rounded-full bg-gradient-to-br flex items-center justify-center border transition-transform hover:scale-110 ${achievement.color}`}>
-                {achievement.icon}
-              </div>
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center whitespace-nowrap">{achievement.label}</span>
-            </div>
-          ))}
+        <div className="flex gap-10 overflow-x-auto no-scrollbar pb-2">
+           {[
+             { icon: '✅', label: 'First 100', color: 'from-[#fef9c3] to-[#fde68a]', unlocked: true },
+             { icon: '🧠', label: 'Physics Pro', color: 'from-[#eff6ff] to-[#dbeafe]', unlocked: true },
+             { icon: '🔥', label: '7-Day Run', color: 'from-[#fff7ed] to-[#fed7aa]', unlocked: true },
+             { icon: '⚡', label: 'Math Wizard', unlocked: false },
+             { icon: '🔖', label: 'Scout', unlocked: false },
+             { icon: '🏅', label: 'Speed Solver', unlocked: false },
+             { icon: '🥇', label: 'Top Ranker', unlocked: false },
+           ].map((ach, i) => (
+             <div key={i} className={`flex flex-col items-center gap-2 shrink-0 transition-all ${ach.unlocked ? 'hover:scale-110 cursor-pointer' : 'opacity-20 grayscale'}`}>
+                <div className={`w-[64px] h-[64px] rounded-full border-2 border-border-subtle flex items-center justify-center text-[1.6rem] shadow-lg ${ach.color ? `bg-gradient-to-br ${ach.color}` : 'bg-surface-subtle'}`}>
+                  {ach.icon}
+                </div>
+                <span className="label-sm text-[0.65rem] font-black uppercase tracking-tighter">{ach.label}</span>
+             </div>
+           ))}
         </div>
-      </section>
-    </div>
+      </div>
+    </motion.div>
   );
 };
 

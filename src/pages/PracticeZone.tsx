@@ -1,177 +1,357 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
-  FileQuestion, Zap, ClipboardList, CheckCircle2, 
-  Play, Clock, Star, School, Plus, ChevronRight, 
-  Target, BarChart3, TrendingUp, Users 
+  FileQuestion, Download, BookOpen, 
+  ChevronRight, Search, LayoutGrid, List,
+  X, ChevronLeft, Mail, Clock, TrendingUp
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { motion } from 'motion/react';
-import { useAuth } from '../context/AuthContext';
+import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
+import { JEE_CHAPTERS } from '../constants';
+import jsPDF from 'jspdf';
+
+type Subject = keyof typeof JEE_CHAPTERS;
 
 const PracticeZone: React.FC = () => {
-  const { user } = useAuth();
+  const [selectedSubject, setSelectedSubject] = useState<Subject>('Physics');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
+  const [exporting, setExporting] = useState<string | null>(null);
+  const [previewChapter, setPreviewChapter] = useState<string | null>(null);
 
-  const options = [
-    { label: "Create Custom Test", desc: "Configure your own mock scenario", icon: <Plus />, color: "text-indigo-400", bg: "bg-indigo-400/20", borderColor: "border-indigo-500" },
-    { label: "Topic Practice", desc: "Solve questions by specific topics", icon: <FileQuestion />, color: "text-cyan-400", bg: "bg-cyan-400/20", borderColor: "border-cyan-500" },
-    { label: "Quick Quizzes", desc: "10-15 qs, instant marks", icon: <Zap />, color: "text-rose-400", bg: "bg-rose-400/20", borderColor: "border-rose-500" },
-    { label: "Saved Drafts", desc: "Resume your created tests", icon: <ClipboardList />, color: "text-amber-400", bg: "bg-amber-400/20", borderColor: "border-amber-500" },
-  ];
+  const subjects: Subject[] = ['Physics', 'Chemistry', 'Maths'];
 
-  const recentTests = [
-    { title: "My Physics Practice - Dec 15", exam: "Practice", time: "2 hours ago", score: "28/30", percent: 93, color: "text-indigo-400" },
-    { title: "Mixed Concept Test", exam: "Quizzes", time: "Yesterday", score: "12/15", percent: 80, color: "text-emerald-400" },
-  ];
+  const filteredChapters = JEE_CHAPTERS[selectedSubject].filter(chapter => 
+    chapter.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Mock function to generate 100 questions for a chapter
+  const generateQuestions = (chapterName: string) => {
+    const questions = [];
+    const types = ['Single Correct', 'Multi-correct', 'Numerical'];
+    
+    for (let i = 1; i <= 20; i++) { // Limit to 20 for preview
+      const type = types[Math.floor(Math.random() * types.length)];
+      questions.push({
+        id: i,
+        type,
+        question: `Question ${i}: This is a sample ${type} question for ${chapterName} in ${selectedSubject}. Solve for the variables provided in the diagram (not shown).`,
+        options: type !== 'Numerical' ? ['Option A', 'Option B', 'Option C', 'Option D'] : null,
+        answer: type === 'Numerical' ? Math.floor(Math.random() * 100).toString() : 'A',
+        solution: `This is a detailed step-by-step solution for Question ${i}. First, identify the key formulas... then apply the values... finally, we get the result.`
+      });
+    }
+    return questions;
+  };
+
+  const exportToPDF = async (chapterName: string) => {
+    setExporting(chapterName);
+    
+    const doc = new jsPDF();
+    const questions = generateQuestions(chapterName);
+    
+    doc.setFontSize(22);
+    doc.text(`JEE Question Bank: ${chapterName}`, 20, 20);
+    doc.setFontSize(14);
+    doc.text(`Subject: ${selectedSubject}`, 20, 30);
+    doc.text(`Total Questions: 100`, 20, 40);
+    doc.setLineWidth(0.5);
+    doc.line(20, 45, 190, 45);
+    
+    let yOffset = 55;
+    const pageHeight = doc.internal.pageSize.height;
+
+    questions.forEach((q, index) => {
+      if (yOffset > pageHeight - 40) {
+        doc.addPage();
+        yOffset = 20;
+      }
+
+      doc.setFont("helvetica", "bold");
+      doc.text(`Q${q.id} (${q.type})`, 20, yOffset);
+      yOffset += 7;
+
+      doc.setFont("helvetica", "normal");
+      const questionLines = doc.splitTextToSize(q.question, 170);
+      doc.text(questionLines, 20, yOffset);
+      yOffset += (questionLines.length * 7);
+
+      if (q.options) {
+        q.options.forEach((opt, optIdx) => {
+          doc.text(`${String.fromCharCode(65 + optIdx)}) ${opt}`, 30, yOffset);
+          yOffset += 7;
+        });
+      }
+
+      yOffset += 5;
+      doc.setFont("helvetica", "bold");
+      doc.text("Detailed Solution:", 20, yOffset);
+      yOffset += 7;
+      doc.setFont("helvetica", "normal");
+      const solutionLines = doc.splitTextToSize(q.solution, 170);
+      doc.text(solutionLines, 20, yOffset);
+      yOffset += (solutionLines.length * 7) + 10;
+    });
+
+    doc.save(`${selectedSubject}_${chapterName.replace(/\s+/g, '_')}_Questions.pdf`);
+    setExporting(null);
+  };
 
   return (
     <div className="space-y-12 pb-20">
-      <header className="flex flex-col md:flex-row items-end justify-between gap-6 overflow-hidden">
+      <header className="space-y-6">
         <div className="space-y-4">
           <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[10px]">
-             <FileQuestion size={16} /> Student Practice Zone
+             <FileQuestion size={16} /> JEE Question Bank
           </div>
-          <h1 className="text-4xl md:text-6xl font-display font-black text-slate-900 tracking-tight leading-none">
-            Self-Paced <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Practice</span>
+          <h1 className="text-4xl md:text-6xl font-display font-black text-slate-900 tracking-tight leading-none uppercase">
+            Power <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Knowledge Hub</span>
           </h1>
-          <p className="text-lg text-slate-500 font-medium max-w-2xl">
-            Create custom mocks, solve topic-wise questions, and track your accuracy without the pressure of official rankings.
+          <p className="text-lg text-slate-500 font-medium max-w-3xl">
+            Access exhaustive chapter-wise question banks for JEE Main & Advanced. Every chapter contains 100+ precision-crafted questions with detailed step-by-step solutions.
           </p>
         </div>
-        <Link to="/tests/configure">
-           <button className="btn-primary h-16 px-10 text-xs px-6 py-2.5">
-              <Plus size={20} className="mr-2" /> Create Custom Test
-           </button>
-        </Link>
-      </header>
 
-      {/* Main Options */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {options.map((opt, i) => (
-          <motion.div 
-            key={i}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: i * 0.1 }}
-            className={cn(
-              "vibrant-card p-8 text-center hover-lift cursor-pointer flex flex-col items-center gap-6 group border-t-4",
-              opt.label === "Create Custom Test" ? "border-indigo-500" :
-              opt.label === "Topic Practice" ? "border-cyan-500" :
-              opt.label === "Quick Quizzes" ? "border-rose-500" : "border-amber-500"
-            )}
-          >
-            <div className={`w-20 h-20 rounded-3xl flex items-center justify-center text-3xl shadow-sm border border-slate-100 group-hover:rotate-12 transition-transform bg-white ${opt.color}`}>
-              {opt.icon}
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900 tracking-tight">{opt.label}</h3>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{opt.desc}</p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* Recent Activity: Logged In Only */}
-      {user ? (
-        <section className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-700">
-           <div className="flex justify-between items-center border-b border-slate-100 pb-4">
-            <h2 className="text-2xl font-black text-slate-900 tracking-tight">Your Practice Tests</h2>
-            <Link to="/results" className="text-xs font-bold text-primary hover:text-secondary transition-colors uppercase tracking-widest">Full History →</Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {recentTests.map((test, i) => (
-              <div key={i} className="vibrant-card p-8 flex flex-col gap-6 group hover:border-primary/20 transition-all">
-                <div className="flex justify-between items-center">
-                  <span className={`vibrant-badge px-3 py-1 ${test.color === 'text-indigo-400' ? 'bg-indigo-50 text-indigo-600' : 'bg-emerald-50 text-emerald-600'}`}>{test.exam}</span>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{test.time}</span>
-                </div>
-                <h3 className="text-lg font-bold text-slate-900 leading-tight group-hover:text-primary transition-colors">{test.title}</h3>
-                <div className="flex items-center justify-between border-y border-slate-50 py-4 my-2">
-                   <div>
-                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Last Score</p>
-                      <p className="text-2xl font-black text-slate-900">{test.score}</p>
-                   </div>
-                   <div className="text-right">
-                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Accuracy</p>
-                      <p className={`text-2xl font-black ${test.percent > 80 ? 'text-emerald-500' : 'text-primary'}`}>{test.percent}%</p>
-                   </div>
-                </div>
-                <button className="btn-secondary w-full h-12 text-[10px]">Review Results</button>
-              </div>
+        {/* Subject Toggles & Search */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 bg-white p-4 rounded-[32px] border border-slate-100 shadow-sm">
+          <div className="flex items-center gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
+            {subjects.map(sub => (
+              <button
+                key={sub}
+                onClick={() => setSelectedSubject(sub)}
+                className={cn(
+                  "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                  selectedSubject === sub 
+                    ? "bg-white text-primary shadow-sm" 
+                    : "text-slate-400 hover:text-slate-600"
+                )}
+              >
+                {sub}
+              </button>
             ))}
           </div>
-        </section>
-      ) : (
-        <section className="relative overflow-hidden p-1 bg-gradient-to-r from-primary/20 via-secondary/20 to-primary/20 rounded-[40px]">
-          <div className="bg-white rounded-[38px] p-12 md:p-20 text-center relative overflow-hidden shadow-sm">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.05),transparent_70%)] pointer-events-none" />
-            
-            <div className="max-w-3xl mx-auto relative z-10">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/5 border border-primary/10 rounded-full text-[10px] font-bold text-primary uppercase tracking-widest mb-8">
-                Premium Content Locked
-              </div>
-              
-              <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tight mb-8 leading-none">
-                Unlock Your Full<br/>Testing Potential
-              </h2>
-              
-              <p className="text-lg text-slate-500 font-medium mb-12">
-                Join 100,000+ students who use our high-fidelity mock tests to simulate real exam environments and track their growth.
-              </p>
-              
-              <div className="flex flex-wrap items-center justify-center gap-6">
-                <Link to="/login">
-                  <button className="btn-primary h-16 px-12 text-xs flex items-center gap-3">
-                    Login to Start Testing
-                    <Play size={18} fill="currentColor" />
-                  </button>
-                </Link>
-                
-                <button className="btn-secondary h-16 px-12 text-xs flex items-center gap-3 opacity-50 cursor-not-allowed">
-                  Sample Test (Coming Soon)
+
+          <div className="flex flex-1 items-center gap-4 max-w-xl">
+             <div className="relative flex-1 group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors" size={18} />
+                <input 
+                  type="text" 
+                  placeholder={`Search ${selectedSubject} chapters...`}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-12 pr-4 h-14 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all outline-none"
+                />
+             </div>
+             
+             <div className="flex items-center gap-2 p-1 bg-slate-100 rounded-xl">
+                <button 
+                  onClick={() => setViewMode('grid')}
+                  className={cn("p-2 rounded-lg transition-all", viewMode === 'grid' ? "bg-white text-primary shadow-sm" : "text-slate-400")}
+                >
+                  <LayoutGrid size={18} />
                 </button>
-              </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24">
-                {[
-                  { label: "NTA Pattern", icon: <School size={20} /> },
-                  { label: "Speed Tracking", icon: <Clock size={20} /> },
-                  { label: "AI Analysis", icon: <CheckCircle2 size={20} /> },
-                  { label: "Rank Predictor", icon: <Star size={20} /> },
-                ].map((f, i) => (
-                  <div key={i} className="flex flex-col items-center gap-4 group">
-                    <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-primary border border-slate-100 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
-                      {f.icon}
-                    </div>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{f.label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+                <button 
+                  onClick={() => setViewMode('list')}
+                  className={cn("p-2 rounded-lg transition-all", viewMode === 'list' ? "bg-white text-primary shadow-sm" : "text-slate-400")}
+                >
+                  <List size={18} />
+                </button>
+             </div>
           </div>
-        </section>
-      )}
-
-      {/* Categories for Practice */}
-      <section className="space-y-8">
-        <div className="flex justify-between items-center border-b border-slate-100 pb-4">
-            <h2 className="text-2xl font-black text-slate-900 tracking-tight">Practice by Category</h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-           {['Physics', 'Chemistry', 'Mathematics'].map(sub => (
-              <div key={sub} className="vibrant-card p-8 space-y-6">
-                 <h3 className="text-xl font-bold text-slate-900 tracking-tight">{sub}</h3>
-                 <div className="space-y-3">
-                    {['Chapter Wise', 'Topic Wise', 'PYQs'].map(type => (
-                       <button key={type} className="w-full flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-primary hover:border-primary/20 transition-all shadow-sm">
-                          {type} <ChevronRight size={14} />
-                       </button>
-                    ))}
+      </header>
+
+      {/* Chapters Content */}
+      <AnimatePresence mode="wait">
+        <motion.div 
+          key={selectedSubject}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className={cn(
+            "grid gap-6",
+            viewMode === 'grid' ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"
+          )}
+        >
+          {filteredChapters.map((chapter, i) => (
+            <motion.div
+              layout
+              key={chapter}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: i * 0.02 }}
+              className={cn(
+                "vibrant-card group hover:border-primary/20 transition-all overflow-hidden relative",
+                viewMode === 'list' ? "p-6 flex items-center justify-between gap-6" : "p-8 space-y-6"
+              )}
+            >
+              {/* Info Section */}
+              <div className="flex items-center gap-5">
+                 <div className="w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center text-primary border border-primary/10 group-hover:bg-primary group-hover:text-white transition-all">
+                    <BookOpen size={24} />
+                 </div>
+                 <div>
+                    <h3 className="font-bold text-slate-900 leading-tight">{chapter}</h3>
+                    <div className="flex items-center gap-3 mt-1.5">
+                       <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">100 Questions</span>
+                       <span className="w-1.5 h-1.5 bg-slate-200 rounded-full" />
+                       <span className="text-[9px] font-black uppercase tracking-widest text-emerald-500">Solved</span>
+                    </div>
                  </div>
               </div>
-           ))}
-        </div>
-      </section>
+
+              {/* Actions */}
+              <div className={cn(
+                "flex items-center gap-4",
+                viewMode === 'list' ? "" : "pt-4 border-t border-slate-50"
+              )}>
+                 <button 
+                  onClick={() => exportToPDF(chapter)}
+                  disabled={exporting === chapter}
+                  className={cn(
+                    "flex-1 h-12 flex items-center justify-center gap-2 px-6 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                    exporting === chapter 
+                      ? "bg-slate-100 text-slate-400 cursor-not-allowed" 
+                      : "bg-white border-2 border-slate-100 text-slate-600 hover:border-primary/20 hover:text-primary shadow-sm"
+                  )}
+                 >
+                    {exporting === chapter ? (
+                      <>Processing...</>
+                    ) : (
+                      <>Export PDF <Download size={14} /></>
+                    )}
+                 </button>
+                 <button 
+                    onClick={() => setPreviewChapter(chapter)}
+                    className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center hover:bg-black transition-all shadow-xl shadow-black/10"
+                    title="Preview Questions"
+                  >
+                     <ChevronRight size={18} />
+                  </button>
+              </div>
+
+              {/* Grid Decorative Elements */}
+              {viewMode === 'grid' && (
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
+              )}
+            </motion.div>
+          ))}
+
+          {filteredChapters.length === 0 && (
+            <div className="col-span-full py-20 text-center space-y-4">
+               <div className="w-20 h-20 bg-slate-100 rounded-3xl flex items-center justify-center text-slate-300 mx-auto">
+                 <Search size={32} />
+               </div>
+               <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">No chapters found matching your search</p>
+            </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Preview Modal */}
+      <AnimatePresence>
+        {previewChapter && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-10">
+             <motion.div 
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               exit={{ opacity: 0 }}
+               onClick={() => setPreviewChapter(null)}
+               className="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
+             />
+             <motion.div
+               initial={{ opacity: 0, scale: 0.95, y: 30 }}
+               animate={{ opacity: 1, scale: 1, y: 0 }}
+               exit={{ opacity: 0, scale: 0.95, y: 30 }}
+               className="relative w-full max-w-5xl h-[85vh] bg-white rounded-[40px] flex flex-col overflow-hidden shadow-2xl border border-slate-100"
+             >
+                {/* Header */}
+                <div className="p-8 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
+                   <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-primary/5 rounded-2xl flex items-center justify-center text-primary border border-primary/10">
+                         <BookOpen size={24} />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-bold text-slate-900 tracking-tight leading-none">{previewChapter}</h2>
+                        <div className="flex items-center gap-3 mt-1.5">
+                           <span className="text-[9px] font-black uppercase tracking-widest text-primary">JEE Main Material</span>
+                           <span className="w-1.5 h-1.5 bg-slate-200 rounded-full" />
+                           <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">20 Sample Questions</span>
+                        </div>
+                      </div>
+                   </div>
+                   <button 
+                     onClick={() => setPreviewChapter(null)}
+                     className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all"
+                   >
+                      <X size={24} />
+                   </button>
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 overflow-y-auto p-8 space-y-12 custom-scrollbar">
+                   {generateQuestions(previewChapter).map((q, i) => (
+                      <div key={q.id} className="space-y-6 animate-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: `${i * 100}ms` }}>
+                         <div className="flex items-center gap-3">
+                            <span className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center font-black text-xs">
+                               Q{q.id}
+                            </span>
+                            <span className="px-4 py-1.5 bg-primary/5 text-primary border border-primary/10 rounded-full text-[10px] font-black uppercase tracking-widest">
+                               {q.type}
+                            </span>
+                         </div>
+                         
+                         <p className="text-lg text-slate-700 font-medium leading-relaxed max-w-4xl">
+                            {q.question}
+                         </p>
+
+                         {q.options && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl">
+                               {q.options.map((opt, optIdx) => (
+                                  <div key={optIdx} className="flex items-center gap-4 p-4 rounded-2xl border border-slate-100 hover:border-primary/20 hover:bg-primary/5 transition-all group cursor-pointer">
+                                     <div className="w-8 h-8 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-[10px] font-black group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all">
+                                        {String.fromCharCode(65 + optIdx)}
+                                     </div>
+                                     <span className="text-sm font-bold text-slate-600 group-hover:text-slate-900 transition-colors">{opt}</span>
+                                  </div>
+                               ))}
+                            </div>
+                         )}
+
+                         <div className="bg-emerald-50/50 border border-emerald-100 rounded-[32px] p-8 space-y-4">
+                            <div className="flex items-center gap-2 text-emerald-600 font-black uppercase tracking-widest text-[10px]">
+                               <TrendingUp size={16} /> Strategy & Solution
+                            </div>
+                            <p className="text-sm text-slate-600 font-medium leading-relaxed italic">
+                               {q.solution}
+                            </p>
+                            <div className="flex items-center gap-2 pt-2">
+                               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Core Concept:</span>
+                               <span className="px-3 py-1 bg-white border border-emerald-100 rounded-full text-[9px] font-bold text-emerald-600">Fundamental Theory</span>
+                            </div>
+                         </div>
+
+                         {i < 19 && <div className="h-px bg-slate-50 w-full" />}
+                      </div>
+                   ))}
+                </div>
+
+                {/* Footer */}
+                <div className="p-8 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
+                   <div className="flex items-center gap-4 text-slate-400 font-bold text-[10px] uppercase tracking-widest">
+                      <Clock size={16} /> estimated read time: 15 mins
+                   </div>
+                   <button 
+                     onClick={() => exportToPDF(previewChapter)}
+                     disabled={exporting === previewChapter}
+                     className="btn-primary h-14 px-10 text-xs"
+                   >
+                      {exporting === previewChapter ? "Processing..." : "Download Full PDF Bank"}
+                   </button>
+                </div>
+             </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

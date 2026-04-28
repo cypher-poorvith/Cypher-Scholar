@@ -1,111 +1,168 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Outfit", sans-serif;
 
-  --color-primary: #6366f1;
-  --color-secondary: #a855f7;
-  --color-accent: #ec4899;
+  /* Instagram-style palette */
+  --color-pr: #e1306c;
+  --color-sec: #833ab4;
+  --color-acc: #fd1d1d;
   
-  --color-physics: #3b82f6;
-  --color-chemistry: #10b981;
-  --color-math: #8b5cf6;
-  --color-biology: #f97316;
-  --color-english: #ec4899;
+  --color-ig-pink: #e1306c;
+  --color-ig-purple: #833ab4;
+  --color-ig-orange: #f77737;
+  --color-ig-yellow: #fec053;
+  --color-ig-blue: #405de6;
 
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-  --color-info: #3b82f6;
+  --color-grad-1: #f09433;
+  --color-grad-2: #e6683c;
+  --color-grad-3: #dc2743;
+  --color-grad-4: #cc2366;
+  --color-grad-5: #bc1888;
+  
+  --color-phy: #f77737;
+  --color-chm: #e1306c;
+  --color-mth: #833ab4;
 
-  --radius-xl: 32px;
-  --radius-lg: 20px;
-  --radius-md: 12px;
+  --color-surface-bg: #fdf4f8;
+  --color-surface-card: #ffffff;
+  --color-surface-subtle: #fce8f3;
+  
+  --color-border-subtle: #f3d0e5;
+  --color-border-strong: #e8b4d0;
 
-  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
-  --shadow-float: 0 20px 50px -12px rgba(99, 102, 241, 0.15);
+  --color-tx-main: #1a0a12;
+  --color-tx-muted: #6b3554;
+  --color-tx-dim: #c08099;
 }
 
 @layer base {
-  * {
-    font-style: normal !important;
+  :root {
+    --grad: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    --grad-ig: linear-gradient(135deg, #f77737, #e1306c, #833ab4, #405de6);
+    --grad-h: linear-gradient(135deg, #fd1d1d, #e1306c, #c13584, #833ab4);
+    --sh: 0 2px 12px rgba(225, 48, 108, .07);
+    --shh: 0 8px 32px rgba(225, 48, 108, .18);
+  }
+
+  [data-theme='dark'] {
+    --color-surface-bg: #1a0a12;
+    --color-surface-card: #2d1020;
+    --color-surface-subtle: #200c17;
+    --color-border-subtle: #4a1a30;
+    --color-border-strong: #6b2a44;
+    --color-tx-main: #fce8f3;
+    --color-tx-muted: #c08099;
+    --color-tx-dim: #6b3554;
+    --sh: 0 2px 12px rgba(0, 0, 0, .4);
+    --shh: 0 8px 32px rgba(225, 48, 108, .3);
   }
 
   body {
-    @apply bg-slate-50 text-slate-900 font-sans antialiased overflow-x-hidden;
-    background-image: 
-      radial-gradient(circle at 100% 0%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
-      radial-gradient(circle at 0% 100%, rgba(236, 72, 153, 0.05) 0%, transparent 40%);
-    background-attachment: fixed;
+    @apply bg-surface-bg text-tx-main font-sans antialiased min-h-screen overflow-x-hidden transition-all duration-300;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-bold tracking-tight;
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight font-black uppercase;
+  }
+  
+  * {
+    @apply transition-colors duration-200;
   }
 }
 
 @layer components {
-  /* Vibrant Cards */
-  .vibrant-card {
-    @apply bg-white border border-slate-100 rounded-lg shadow-card p-6 transition-all duration-300;
+  .instagram-gradient {
+    background: var(--grad);
   }
 
-  .vibrant-card:hover {
-    @apply -translate-y-1 shadow-float border-primary/10;
+  .glass-panel {
+    @apply bg-surface-card border border-border-subtle rounded-[20px] p-6 transition-all duration-300;
+    box-shadow: var(--sh);
   }
 
-  /* Gradient Buttons */
+  .glass-panel:hover:not(.nh) {
+    @apply -translate-y-1 border-pr/30;
+    box-shadow: var(--shh);
+  }
+
   .btn-primary {
-    @apply px-6 h-12 rounded-full bg-linear-to-r from-primary via-secondary to-accent text-white font-bold text-sm tracking-wide transition-all hover:scale-105 active:scale-95 shadow-md hover:shadow-lg flex items-center justify-center gap-2;
+    @apply inline-flex items-center justify-center gap-2 px-7 h-[42px] rounded-full bg-[var(--grad)] text-white font-black text-[0.8rem] tracking-wider transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-lg shadow-pr/20;
+  }
+  .btn-primary:hover {
+    box-shadow: 0 8px 24px rgba(225, 48, 108, 0.4);
   }
 
   .btn-secondary {
-    @apply px-6 h-12 rounded-full bg-slate-100 text-slate-700 font-bold text-sm transition-all hover:bg-slate-200 active:scale-95 flex items-center justify-center gap-2;
+    @apply inline-flex items-center justify-center gap-2 px-5 h-[42px] rounded-full bg-surface-subtle border border-border-subtle text-tx-muted font-black text-[0.8rem] tracking-wider transition-all hover:bg-border-subtle hover:text-pr cursor-pointer;
   }
 
-  /* Vibrant Inputs */
-  .vibrant-input {
-    @apply w-full bg-white border-2 border-slate-100 rounded-md px-4 py-3 text-sm transition-all focus:border-primary/30 focus:ring-4 focus:ring-primary/5 outline-none placeholder:text-slate-400;
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-[0.6rem] font-black uppercase tracking-[0.1em] border;
   }
 
-  /* Navigation Item */
-  .nav-item {
-    @apply flex flex-col items-center gap-1 p-2 rounded-xl text-slate-400 transition-all hover:text-primary cursor-pointer;
+  .badge-primary {
+    @apply bg-pr/10 text-pr border-pr/30;
   }
 
-  .nav-item.active {
-    @apply text-primary font-bold;
+  .badge-physics {
+    @apply bg-phy/10 text-phy border-phy/30;
   }
 
-  /* Badge Styles */
-  .vibrant-badge {
-    @apply px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border;
+  .badge-chemistry {
+    @apply bg-chm/10 text-chm border-chm/30;
   }
 
-  .badge-success { @apply bg-success/10 text-success border-success/20; }
-  .badge-warning { @apply bg-warning/10 text-warning border-warning/20; }
-  .badge-error { @apply bg-error/10 text-error border-error/20; }
+  .badge-maths {
+    @apply bg-mth/10 text-mth border-mth/30;
+  }
+
+  .label-sm {
+    @apply text-[0.65rem] font-black uppercase tracking-[0.15em] text-tx-dim;
+  }
+
+  .gradient-text {
+    @apply bg-[var(--grad)] bg-clip-text text-transparent;
+  }
+  
+  .input-field {
+    @apply w-full bg-surface-card border-[2px] border-border-subtle rounded-[14px] px-4 py-3 text-[0.9rem] font-sans text-tx-main outline-none transition-all focus:border-pr/50 placeholder:text-tx-dim/50;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+  }
+  .input-field:focus {
+    box-shadow: 0 0 0 4px rgba(225, 48, 108, 0.08);
+  }
+
+  .admin-sidebar-item {
+    @apply flex items-center gap-3 px-6 py-3 text-[0.75rem] font-black uppercase tracking-widest text-tx-muted transition-all border-l-4 border-transparent hover:bg-pr/5 hover:text-pr;
+  }
+  .admin-sidebar-item.active {
+    @apply bg-pr/10 text-pr border-pr;
+  }
 }
 
-.primary-gradient-text {
-  @apply bg-linear-to-r from-primary via-secondary to-accent bg-clip-text text-transparent;
+/* Custom animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  @apply bg-slate-100;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-slate-300 rounded-full hover:bg-slate-400;
+.animate-fade-up {
+  animation: fadeUp 0.4s ease-out forwards;
 }
 
-/* Page Transition Wrapper */
-.page-wrapper {
-  @apply w-full min-h-screen pt-16 pb-24 md:pb-8 md:pl-64;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
 }
 
+::-webkit-scrollbar-track {
+  @apply bg-surface-subtle;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-border-strong rounded-full;
+}

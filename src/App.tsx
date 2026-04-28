@@ -6,12 +6,15 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import SubjectPage from './pages/SubjectPage';
-import ExamsPage from './pages/ExamsPage';
+import Exams from './pages/Exams';
+import Simulations from './pages/Simulations';
+import Pricing from './pages/Pricing';
 import GradesPage from './pages/GradesPage';
 import PracticeZone from './pages/PracticeZone';
 import SubjectDetail from './pages/SubjectDetail';
@@ -24,10 +27,11 @@ import About from './pages/About';
 import Feedback from './pages/Feedback';
 import Onboarding from './pages/Onboarding';
 import ScholarSeries from './pages/ScholarSeries';
-import ResultsHub from './pages/ResultsHub';
 import StudentLayout from './components/layout/StudentLayout';
 import EditorLayout from './components/layout/EditorLayout';
 import EditorDashboard from './pages/EditorDashboard';
+
+import AdminDashboard from './pages/AdminDashboard';
 
 // Admin Pages
 import UsersManagement from './pages/admin/UsersManagement';
@@ -45,7 +49,7 @@ import { UserRole } from './types';
 import { AnimatePresence } from 'motion/react';
 
 const ProtectedRoute = ({ children, roles }: { children: React.ReactNode, roles?: UserRole[] }) => {
-  const { user, profile, loading, role } = useAuth();
+  const { user, profile, loading, role, isAdmin } = useAuth();
   const location = useLocation();
 
   if (loading) return <Loader size="full" label="SYSTEM INITIALIZING..." />;
@@ -55,12 +59,12 @@ const ProtectedRoute = ({ children, roles }: { children: React.ReactNode, roles?
   }
 
   // If user exists but profile doesn't (race condition), wait a bit or show error
-  if (!role && profile === null && !loading) {
+  if (!role && profile === null && !loading && !isAdmin) {
      // Profile might still be loading or being created
      return <Loader size="full" label="SYNCING PROFILE..." />;
   }
 
-  if (roles && role && !roles.includes(role)) {
+  if (roles && !isAdmin && role && !roles.includes(role)) {
     return <Navigate to="/dashboard" />;
   }
 
@@ -81,11 +85,11 @@ const GuestRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 function AppContent() {
-  const { user, effectiveRole } = useAuth();
+  const { user, effectiveRole, isAdmin } = useAuth();
   const location = useLocation();
 
   const renderContent = (content: React.ReactNode) => {
-    if (effectiveRole === UserRole.SUPERADMIN) {
+    if (isAdmin || effectiveRole === UserRole.SUPERADMIN) {
       return <SuperadminLayout>{content}</SuperadminLayout>;
     }
     if (effectiveRole === UserRole.EDITOR) {
@@ -95,7 +99,7 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-surface-bg transition-colors duration-300">
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           {/* Public / Landing */}
@@ -108,11 +112,12 @@ function AppContent() {
           <Route path="/subjects/:category" element={renderContent(<SubjectPage />)} />
           <Route path="/subject/:id" element={renderContent(<SubjectDetail />)} />
           <Route path="/topic/:id" element={renderContent(<TopicDetail />)} />
-          <Route path="/exams" element={renderContent(<ExamsPage />)} />
+          <Route path="/exams" element={renderContent(<Exams />)} />
+          <Route path="/simulations" element={renderContent(<Simulations />)} />
+          <Route path="/pricing" element={renderContent(<Pricing />)} />
           <Route path="/grades" element={renderContent(<GradesPage />)} />
           <Route path="/practice" element={renderContent(<PracticeZone />)} />
           <Route path="/scholar-series" element={renderContent(<ScholarSeries />)} />
-          <Route path="/results" element={renderContent(<ResultsHub />)} />
           <Route path="/about" element={renderContent(<About />)} />
           <Route path="/feedback" element={renderContent(<Feedback />)} />
           <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
@@ -133,6 +138,7 @@ function AppContent() {
           </Route>
 
           {/* Admin Dedicated Routes */}
+          <Route path="/admin" element={<ProtectedRoute roles={[UserRole.SUPERADMIN]}><AdminDashboard /></ProtectedRoute>} />
           <Route path="/admin/overview" element={<ProtectedRoute roles={[UserRole.SUPERADMIN]}>{renderContent(<Analytics />)}</ProtectedRoute>} />
           <Route path="/admin/users" element={<ProtectedRoute roles={[UserRole.SUPERADMIN]}>{renderContent(<UsersManagement />)}</ProtectedRoute>} />
           <Route path="/admin/team" element={<ProtectedRoute roles={[UserRole.SUPERADMIN]}>{renderContent(<TeamManagement />)}</ProtectedRoute>} />
@@ -157,9 +163,11 @@ export default function App() {
   return (
     <BrowserRouter>
       <ToastProvider>
-        <AuthProvider>
-           <AppContent />
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+             <AppContent />
+          </AuthProvider>
+        </ThemeProvider>
       </ToastProvider>
     </BrowserRouter>
   );

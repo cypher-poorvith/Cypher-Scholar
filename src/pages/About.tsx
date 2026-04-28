@@ -1,83 +1,122 @@
 import React from 'react';
-import { motion } from 'motion/react';
-import { Shield, Sparkles, Heart, Rocket, Github, Linkedin, Twitter, GraduationCap } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const About: React.FC = () => {
+  const { profile } = useAuth();
+  
   return (
-    <div className="p-8 space-y-12 max-w-5xl mx-auto animate-in fade-in duration-700">
-      <header className="space-y-6 text-center md:text-left">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/5 border border-primary/10 rounded-full text-[10px] font-bold text-primary uppercase tracking-widest">
-           Platform Info // V4.2
-        </div>
-        <h1 className="text-5xl md:text-7xl font-display font-black text-slate-900 leading-none uppercase tracking-tighter">
-          ABOUT<br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">CYPHER SCHOLAR</span>
-        </h1>
-        <p className="text-slate-500 font-medium max-w-xl mx-auto md:mx-0">Empowering Indian students with high-quality, accessible, and interactive educational resources.</p>
-      </header>
-
-      <div className="vibrant-card p-10 bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/10 shadow-xl shadow-primary/5">
-        <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight mb-4">Our Mission</h3>
-        <p className="text-lg text-slate-600 leading-relaxed font-medium">
-          Making high-quality education accessible to everyone. 
-          Cypher Scholar provides top-tier study materials and interactive 
-          learning tools to every student striving for excellence, completely free.
-          We believe that knowledge should be the baseline, not a luxury.
-        </p>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="vibrant-card p-8 bg-white shadow-sm border-slate-100">
-          <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-6 border-b border-slate-50 pb-4">Technology Focus</h3>
-          <ul className="space-y-4 text-[11px] font-bold">
-             <li className="flex items-center gap-3 text-slate-500">
-                <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#FB2576]"></div>
-                ULTRA-SECURE INFRASTRUCTURE
-             </li>
-             <li className="flex items-center gap-3 text-slate-500">
-                <div className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_#332FD0]"></div>
-                ADAPTIVE USER INTERFACE
-             </li>
-             <li className="flex items-center gap-3 text-slate-500">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></div>
-                HIGH PERFORMANCE SEARCH ENGINE
-             </li>
-          </ul>
-        </div>
-
-        <div className="vibrant-card p-8 bg-white shadow-sm border-slate-100">
-          <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-6 border-b border-slate-50 pb-4">Platform Stats</h3>
-          <div className="space-y-6">
-             <div className="flex items-center justify-between">
-                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Version</span>
-                <span className="vibrant-badge bg-primary/10 text-primary px-3 py-1">4.2.0-STABLE</span>
-             </div>
-             <div className="flex items-center justify-between">
-                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Security Status</span>
-                <span className="vibrant-badge bg-emerald-50 text-emerald-600 px-3 py-1">ENCRYPTED SHIELD ON</span>
-             </div>
+    <div className="p-6 md:p-10 max-w-[960px] mx-auto space-y-6">
+      {/* Hero Banner */}
+      <div className="rounded-[28px] bg-[var(--grad)] p-12 text-white relative overflow-hidden shadow-xl">
+        <div className="absolute -top-10 -right-10 w-[200px] h-[200px] bg-white/10 rounded-full blur-[40px] pointer-events-none" />
+        <div className="absolute -bottom-15 -left-10 w-[180px] h-[180px] bg-white/5 rounded-full blur-[30px] pointer-events-none" />
+        
+        <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
+          <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-md border-[3px] border-white/50 flex items-center justify-center font-display text-[1.8rem] font-black shrink-0">
+            {profile?.displayName ? profile.displayName.substring(0, 2).toUpperCase() : 'PB'}
+          </div>
+          <div className="text-center md:text-left">
+            <h1 className="text-[2.2rem] font-black leading-tight tracking-tight mb-1">{profile?.displayName || 'Poorvith M P'}</h1>
+            <p className="opacity-85 text-[0.9rem] font-medium">JEE Aspirant · Dropper Year · Karnataka, India</p>
+            <div className="flex flex-wrap justify-center md:justify-start gap-2 mt-3">
+              <span className="bg-white/20 border border-white/35 rounded-full px-3 py-1 text-[0.62rem] font-bold uppercase tracking-widest">🎯 JEE Main + Advanced 2026</span>
+              <span className="bg-white/20 border border-white/35 rounded-full px-3 py-1 text-[0.62rem] font-bold uppercase tracking-widest">📍 Karnataka</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Creator Detail */}
-      <section className="vibrant-card p-10 flex flex-col md:flex-row items-center gap-12 bg-white shadow-xl shadow-slate-200/50 border-slate-100">
-        <div className="w-40 h-40 bg-slate-50 border border-slate-100 rounded-[32px] flex items-center justify-center relative group shadow-inner">
-           <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors rounded-[32px]" />
-           <GraduationCap size={64} className="text-primary opacity-20 group-hover:opacity-60 transition-all group-hover:scale-110" />
+      {/* Stats strip */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          { val: '90.14%', lbl: 'JEE Main Jan', sub: 'Percentile', color: 'border-t-pr', text: 'text-pr' },
+          { val: '1.52L', lbl: 'JEE Main Apr', sub: 'Rank', color: 'border-t-ig1', text: 'text-ig1' },
+          { val: '85%', lbl: 'Chemistry', sub: 'Strongest subject', color: 'border-t-chm', text: 'text-chm' },
+          { val: '62%', lbl: 'Mathematics', sub: 'Active focus area', color: 'border-t-mth', text: 'text-mth' },
+        ].map((stat, i) => (
+          <div key={i} className={`glass-panel nh text-center border-t-[3px] ${stat.color}`}>
+            <div className={`font-display text-[1.8rem] font-black ${stat.text}`}>{stat.val}</div>
+            <p className="label-sm text-[0.65rem] truncate">{stat.lbl}</p>
+            <p className="text-[0.72rem] text-tx-muted mt-0.5">{stat.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {/* Academic Journey */}
+        <div className="glass-panel nh">
+          <div className="flex items-center gap-2.5 border-b border-border-subtle pb-3.5 mb-4">
+            <div className="w-9 h-9 rounded-[10px] bg-pr/10 flex items-center justify-center text-[1.1rem]">📚</div>
+            <span className="font-display font-black text-[0.95rem] uppercase tracking-widest">Academic Journey</span>
+          </div>
+          <div className="space-y-4">
+            {[
+              { title: 'Dropper Year — 2025/26', desc: 'Full focus on JEE Main & Advanced. Studying with Canvas Classes (Inorganic Chemistry), Mathongo and Neha Agrawal (Mathematics).', color: 'bg-[var(--grad)]' },
+              { title: 'JEE Main April 2025', desc: 'Rank ~1,52,000. Identified Math application as primary weak area to address in dropper year.', color: 'bg-pr/30' },
+              { title: 'JEE Main January 2025', desc: '~90.14 Percentile — a strong start. Inorganic Chemistry emerged as a relative strength.', color: 'bg-pr/20' }
+            ].map((j, i) => (
+              <div key={i} className="flex gap-3">
+                <div className={`w-2 shrink-0 ${j.color} rounded-full`} />
+                <div>
+                  <p className="text-[0.82rem] font-bold mb-0.5">{j.title}</p>
+                  <p className="text-[0.75rem] text-tx-muted leading-relaxed">{j.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="flex-1 text-center md:text-left">
-           <span className="text-[10px] text-primary font-bold tracking-[0.3em] uppercase">Project Founder</span>
-           <h2 className="text-4xl font-display font-black text-slate-900 leading-none uppercase tracking-tight mt-2">Poorvith M P</h2>
-           <p className="text-lg text-slate-500 font-medium mt-4 italic leading-relaxed">
-             "Knowledge should be the baseline, not the privilege. Cypher is the bridge to universal mastery."
-           </p>
-           <div className="flex justify-center md:justify-start gap-6 mt-8">
-              <a href="https://github.com/poorvith519" target="_blank" className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:text-primary transition-all border border-slate-100 shadow-sm">
-                <Github size={24} />
-              </a>
-           </div>
+
+        {/* Subject Performance */}
+        <div className="glass-panel nh">
+          <div className="flex items-center gap-2.5 border-b border-border-subtle pb-3.5 mb-4">
+            <div className="w-9 h-9 rounded-[10px] bg-ig1/10 flex items-center justify-center text-[1.1rem]">📊</div>
+            <span className="font-display font-black text-[0.95rem] uppercase tracking-widest">Subject Performance</span>
+          </div>
+          <div className="space-y-4">
+             {[
+               { sub: 'Physics', tag: 'Improving', pct: 78, color: 'bg-phy', tcolor: 'text-phy' },
+               { sub: 'Chemistry', tag: 'Strength', pct: 85, color: 'bg-chm', tcolor: 'text-chm' },
+               { sub: 'Mathematics', tag: 'Focus', pct: 62, color: 'bg-mth', tcolor: 'text-mth' }
+             ].map((s, i) => (
+               <div key={i}>
+                  <div className="flex justify-between items-center mb-1.5">
+                    <div className="flex items-center gap-2">
+                       <span className="text-[0.82rem] font-bold">⚡ {s.sub}</span>
+                       <span className={`badge ${s.sub === 'Physics' ? 'badge-physics' : s.sub === 'Chemistry' ? 'badge-chemistry' : 'badge-maths'}`}>{s.tag}</span>
+                    </div>
+                    <span className={`text-[0.78rem] font-bold ${s.tcolor}`}>{s.pct}%</span>
+                  </div>
+                  <div className="w-full bg-surface-subtle h-[5px] rounded-full overflow-hidden">
+                    <div className={`h-full ${s.color}`} style={{ width: `${s.pct}%` }} />
+                  </div>
+               </div>
+             ))}
+          </div>
         </div>
-      </section>
+      </div>
+
+      {/* Platform Info */}
+      <div className="glass-panel nh border-t-[4px] border-pr" style={{ borderImage: 'var(--grad) 1' }}>
+        <div className="flex items-center gap-2.5 border-b border-border-subtle pb-3.5 mb-4">
+          <div className="w-9 h-9 rounded-[10px] bg-pr/10 flex items-center justify-center text-[1.1rem]">ℹ️</div>
+          <span className="font-display font-black text-[0.95rem] uppercase tracking-widest">About Cypher Scholar</span>
+        </div>
+        <p className="text-tx-muted text-[0.88rem] leading-[1.75] max-w-[700px] mb-5 font-medium">The ultimate JEE preparation platform. 3200+ precision questions across Physics, Chemistry, and Mathematics. Chapter-wise question banks with detailed solutions, real-time performance analytics — built for serious aspirants aiming for IITs and NITs.</p>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="glass-panel nh p-3 text-center bg-surface-subtle border-border-subtle flex flex-col justify-center">
+            <div className="font-display font-black text-[1.6rem] text-pr">3200+</div>
+            <p className="label-sm text-[0.55rem]">Questions</p>
+          </div>
+          <div className="glass-panel nh p-3 text-center bg-surface-subtle border-border-subtle flex flex-col justify-center">
+            <div className="font-display font-black text-[1.6rem] text-ig1">82</div>
+            <p className="label-sm text-[0.55rem]">Chapters</p>
+          </div>
+          <div className="glass-panel nh p-3 text-center bg-surface-subtle border-border-subtle flex flex-col justify-center">
+            <div className="font-display font-black text-[1.6rem] text-sec">50k+</div>
+            <p className="label-sm text-[0.55rem]">Students</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
