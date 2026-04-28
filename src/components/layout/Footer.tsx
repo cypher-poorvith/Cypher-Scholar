@@ -5,141 +5,85 @@ import { Facebook, Twitter, Instagram, Linkedin, Mail, FileText } from 'lucide-r
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-surface-card border-t border-border-subtle mt-20 relative z-10">
-      {/* Decorative element */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-pr/30 to-transparent" />
-      
-      <div className="max-w-[1440px] mx-auto px-8 py-16">
-        
-        {/* Top Section */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-          
-          {/* Column 1: Brand */}
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <h3 className="font-display text-3xl font-black uppercase italic tracking-tighter leading-none">
-                <span className="gradient-text">Cypher</span><br />
-                <span className="text-tx-main dark:text-white text-[1rem] tracking-[0.2em] opacity-80 not-italic">Scholar</span>
-              </h3>
-              <p className="text-[0.85rem] font-bold text-tx-muted leading-relaxed uppercase tracking-wide opacity-60">
-                Master Every Subject, Ace Every Exam with India's most comprehensive free learning platform.
-              </p>
+    <footer className="bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 mt-20 relative z-10">
+      <div className="max-w-[1440px] mx-auto px-8 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-20">
+          {/* Brand Info */}
+          <div className="md:col-span-4 space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pr to-sec flex items-center justify-center text-white text-lg font-black">CP</div>
+              <span className="text-2xl font-black font-display bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-500">Cypher Scholar</span>
             </div>
-            
+            <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-sm">
+              The ultimate digital sanctuary for elite academic performance. Experience rigorous learning through high-stakes simulations and master-level curriculum.
+            </p>
             <div className="flex gap-4">
               {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
-                <a key={i} href="#" className="w-11 h-11 rounded-[14px] bg-surface-subtle border border-border-subtle flex items-center justify-center text-tx-muted hover:text-pr hover:border-pr/30 transition-all shadow-sm">
+                <a key={i} href="#" className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:text-pr hover:border-pr/30 transition-all shadow-sm">
                   <Icon size={18} />
                 </a>
               ))}
             </div>
           </div>
-          
-          {/* Column 2: Quick Links */}
-          <div className="space-y-8">
-            <h4 className="text-[0.7rem] font-black text-tx-main uppercase tracking-[0.25em] italic">Quick Links</h4>
+
+          {/* Links */}
+          <div className="md:col-span-2 space-y-6">
+            <h4 className="text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">Academy</h4>
             <ul className="space-y-4">
-              {[
-                { label: 'Home', path: '/' },
-                { label: 'Competitive Exams', path: '/exams' },
-                { label: 'Grades & Tracks', path: '/grades' },
-                { label: 'All Subjects', path: '/subjects/all' }
-              ].map((link, i) => (
-                <li key={i}>
-                  <Link to={link.path} className="text-[0.75rem] font-black text-tx-dim hover:text-pr transition-colors uppercase tracking-widest">{link.label}</Link>
+              {['Courses', 'Simulations', 'Exams', 'Library'].map((item) => (
+                <li key={item}>
+                  <Link to={`/${item.toLowerCase()}`} className="text-sm font-bold text-slate-500 hover:text-pr transition-colors">{item}</Link>
                 </li>
               ))}
             </ul>
           </div>
-          
-          {/* Column 3: Resources */}
-          <div className="space-y-8">
-            <h4 className="text-[0.7rem] font-black text-tx-main uppercase tracking-[0.25em] italic">Resources</h4>
+
+          <div className="md:col-span-2 space-y-6">
+            <h4 className="text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">Network</h4>
             <ul className="space-y-4">
-              {[
-                { label: 'Practice Tests', path: '/practice' },
-                { label: 'Study Materials', path: '/pdfs' },
-                { label: 'Video Lectures', path: '/videos' },
-                { label: 'Formula Sheets', path: '/about' }
-              ].map((link, i) => (
-                <li key={i}>
-                  <Link to={link.path} className="text-[0.75rem] font-black text-tx-dim hover:text-pr transition-colors uppercase tracking-widest">{link.label}</Link>
+              {['Users', 'Community', 'Rankings', 'Mentorship'].map((item) => (
+                <li key={item}>
+                  <Link to="#" className="text-sm font-bold text-slate-500 hover:text-pr transition-colors">{item}</Link>
                 </li>
               ))}
             </ul>
           </div>
-          
-          {/* Column 4: Support */}
-          <div className="space-y-8">
-            <h4 className="text-[0.7rem] font-black text-tx-main uppercase tracking-[0.25em] italic">Support</h4>
+
+          <div className="md:col-span-2 space-y-6">
+            <h4 className="text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">Institute</h4>
             <ul className="space-y-4">
-              {[
-                { label: 'About Us', path: '/about' },
-                { label: 'Feedback', path: '/feedback' },
-                { label: 'Contribute', path: '/feedback' },
-                { label: 'Contact Us', path: '/about' }
-              ].map((link, i) => (
-                <li key={i}>
-                  <Link to={link.path} className="text-[0.75rem] font-black text-tx-dim hover:text-pr transition-colors uppercase tracking-widest">{link.label}</Link>
+              {['About', 'Privacy', 'Security', 'Compliance'].map((item) => (
+                <li key={item}>
+                  <Link to={`/${item.toLowerCase()}`} className="text-sm font-bold text-slate-500 hover:text-pr transition-colors">{item}</Link>
                 </li>
               ))}
             </ul>
           </div>
-          
+
+          <div className="md:col-span-2 space-y-6">
+            <h4 className="text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">Contact</h4>
+            <ul className="space-y-4">
+              <li>
+                <a href="mailto:support@cypher.scholar" className="text-sm font-bold text-slate-500 hover:text-pr transition-colors flex items-center gap-2">
+                  <Mail size={14} /> Support
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-sm font-bold text-slate-500 hover:text-pr transition-colors flex items-center gap-2">
+                  <FileText size={14} /> Whitepaper
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
-        
-        {/* Divider */}
-        <div className="border-t border-border-subtle pt-16">
-          
-          {/* Developer Credit */}
-          <div className="flex flex-col items-center text-center space-y-8">
-            <div className="space-y-2">
-               <p className="text-[0.8rem] font-black text-tx-muted uppercase tracking-widest">
-                Built By <span className="gradient-text">Poorvith M P</span>
-              </p>
-              <div className="h-1 w-12 bg-pr/20 mx-auto rounded-full" />
-              <p className="text-[10px] font-black text-tx-dim uppercase tracking-[0.4em] opacity-40">A New Developer Emerging</p>
-            </div>
-            
-            <div className="flex flex-wrap justify-center gap-10">
-              <a href="mailto:poorvith519@gmail.com" className="flex items-center gap-2.5 text-[0.7rem] font-black text-tx-muted hover:text-pr transition-colors uppercase tracking-widest">
-                <Mail size={14} className="opacity-60" />
-                Email Support
-              </a>
-              <a href="#" className="flex items-center gap-2.5 text-[0.7rem] font-black text-tx-muted hover:text-pr transition-colors uppercase tracking-widest">
-                <Linkedin size={14} className="opacity-60" />
-                LinkedIn
-              </a>
-              <motion.a 
-                whileHover={{ scale: 1.05 }}
-                href="#" 
-                className="flex items-center gap-2.5 text-[0.7rem] font-black text-pr hover:text-ig-purple transition-colors uppercase tracking-widest bg-pr/5 px-4 py-2 rounded-full border border-pr/10"
-              >
-                <FileText size={14} />
-                View Full Resume
-              </motion.a>
-            </div>
+
+        <div className="pt-10 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">© 2026 Cypher Scholar AI. All rights reserved.</p>
+          <div className="flex gap-8">
+            <Link to="/about" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-pr transition-colors">Privacy Policy</Link>
+            <Link to="/about" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-pr transition-colors">Terms of Service</Link>
           </div>
-          
-          {/* Bottom Bar */}
-          <div className="mt-16 flex flex-col md:flex-row items-center justify-between gap-8 border-t border-border-subtle pt-10">
-            <div className="flex gap-10 text-[0.65rem] font-black text-tx-dim uppercase tracking-widest">
-              <Link to="/about" className="hover:text-pr transition-colors">Privacy Policy</Link>
-              <Link to="/about" className="hover:text-pr transition-colors">Terms of Service</Link>
-            </div>
-            
-            <div className="text-center md:text-right space-y-2">
-              <p className="text-[0.65rem] font-black text-tx-dim uppercase tracking-widest opacity-40">
-                © 2026 Cypher Scholar AI. All rights reserved.
-              </p>
-              <p className="text-[0.6rem] font-bold text-tx-muted uppercase tracking-tight">
-                Made with <span className="text-ig-pink animate-pulse">♥</span> for students across India
-              </p>
-            </div>
-          </div>
-          
         </div>
-        
       </div>
     </footer>
   );

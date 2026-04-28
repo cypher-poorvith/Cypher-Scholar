@@ -81,7 +81,7 @@ const Simulations: React.FC = () => {
               <Play size={18} className="text-pr" />
               <span className="text-[0.7rem] font-black uppercase tracking-[0.3em] text-pr leading-none">Simulation Environment</span>
            </div>
-           <h2 className="text-[3.5rem] md:text-[4.5rem] font-black text-tx-main dark:text-white leading-[0.9] uppercase tracking-tighter mb-4">Interactive Labs</h2>
+           <h2 className="text-[3.5rem] md:text-[6rem] lg:text-[7.5rem] font-black text-tx-main dark:text-white leading-[0.85] uppercase tracking-tighter mb-6 text-3d">Interactive <span className="brand-text-gradient text-glow">Labs</span></h2>
            <p className="text-[1rem] font-medium text-tx-dim max-w-lg">Advanced computational models for conceptual mastery. Select a subject to begin exploration.</p>
         </div>
 

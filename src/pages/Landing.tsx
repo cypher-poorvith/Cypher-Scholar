@@ -121,129 +121,211 @@ const Landing: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="relative overflow-hidden"
+      className="bg-surface font-body-md text-on-surface overflow-x-hidden min-h-screen"
     >
-      {/* Background Glows */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-ig-pink/20 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-ig-purple/20 blur-[120px] pointer-events-none" />
-      
-      {/* Hero Section */}
-      <section className="min-h-[calc(100vh-58px)] flex flex-col items-center justify-center text-center p-6 sm:p-12 relative overflow-hidden">
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="max-w-[820px] mx-auto z-10"
-        >
-          <div className="badge badge-primary mb-6 animate-pulse">JEE Main & Advanced 2026</div>
-          <h1 className="text-[clamp(3rem,8vw,7rem)] font-black leading-[0.85] tracking-tighter mb-6 uppercase">
-            Master Every<br />Subject, Ace<br /><span className="gradient-text">Every Exam</span>
-          </h1>
-          <p className="text-tx-muted text-[1.1rem] max-w-[560px] mx-auto mb-10 leading-[1.6] font-bold uppercase tracking-wider opacity-80">
-            Chapter-wise question banks, real exam questions, live simulations & analytics.
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center mb-16">
-            <Link to="/dashboard" className="btn-primary h-[52px] px-10 text-[0.9rem]">Go to Dashboard →</Link>
-            <Link to="/practice" className="btn-secondary h-[52px] px-8 text-[0.9rem]">Browse Questions</Link>
-          </div>
+      <main>
+        {/* Hero Section */}
+        <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden px-4 md:px-gutter pt-32 pb-20">
+          {/* Background Decorative Elements */}
+          <div className="absolute top-20 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/10 rounded-full blur-[80px] md:blur-[120px] -z-10 animate-pulse" />
+          <div className="absolute bottom-20 right-1/4 w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-secondary/10 rounded-full blur-[70px] md:blur-[100px] -z-10 animate-pulse" />
           
-          <div className="flex flex-wrap justify-center gap-10 md:gap-16">
-            <div className="text-center group">
-              <div className="font-display text-[2.2rem] font-black pointer-events-none group-hover:scale-110 transition-transform text-pr">3200+</div>
-              <div className="label-sm opacity-60">Questions</div>
-            </div>
-            <div className="w-[1px] h-14 bg-border-subtle hidden sm:block" />
-            <div className="text-center group">
-              <div className="font-display text-[2.2rem] font-black pointer-events-none group-hover:scale-110 transition-transform text-sec">82</div>
-              <div className="label-sm opacity-60">Chapters</div>
-            </div>
-            <div className="w-[1px] h-14 bg-border-subtle hidden sm:block" />
-            <div className="text-center group">
-              <div className="font-display text-[2.2rem] font-black pointer-events-none group-hover:scale-110 transition-transform text-ig-orange">3</div>
-              <div className="label-sm opacity-60">Subjects</div>
-            </div>
-            <div className="w-[1px] h-14 bg-border-subtle hidden sm:block" />
-            <div className="text-center group">
-              <div className="font-display text-[2.2rem] font-black pointer-events-none group-hover:scale-110 transition-transform text-pr">50k+</div>
-              <div className="label-sm opacity-60">Students</div>
-            </div>
+          <div className="container-max mx-auto text-center z-10 px-4">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel mb-8 border-white/20 inner-glow"
+            >
+              <div className="w-2 h-2 rounded-full bg-pr shadow-[0_0_8px_rgba(84,0,195,0.8)] animate-pulse" />
+              <span className="font-label-caps text-[0.65rem] md:text-label-caps text-primary uppercase tracking-widest font-black">The Future of Digital Learning</span>
+            </motion.div>
+            
+            <motion.h1 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 0.2, type: 'spring' }}
+              className="font-display text-[52px] md:text-[100px] lg:text-[120px] leading-[0.95] font-black tracking-tight mb-8 text-3d"
+            >
+              Elevate Your <span className="brand-text-gradient text-glow">Intelligence</span>.
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="font-body-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-12 text-[1rem] md:text-[1.125rem] leading-relaxed font-medium"
+            >
+              A premium digital sanctuary where academic rigor meets cutting-edge technology. Experience learning that transcends the ordinary.
+            </motion.p>
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            >
+              <Link
+                to="/signup"
+                className="w-full sm:w-auto px-10 py-5 rounded-full bg-gradient-to-r from-pr to-sec text-white font-black text-[0.9rem] uppercase tracking-widest shadow-xl shadow-pr/20 hover:scale-105 transition-all duration-300"
+              >
+                Begin Journey
+              </Link>
+              <Link
+                to="/simulations"
+                className="w-full sm:w-auto px-10 py-5 rounded-full border-2 border-primary/20 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md text-primary dark:text-pr-light font-black text-[0.9rem] uppercase tracking-widest hover:bg-white/50 transition-all duration-300 flex items-center justify-center gap-2"
+              >
+                View Curriculum <span className="text-[1.2rem]">→</span>
+              </Link>
+            </motion.div>
           </div>
-        </motion.div>
-      </section>
+        </section>
 
-      {/* Simulation Section */}
-      <section className="py-20 px-6 sm:px-12 bg-surface-card border-t border-border-subtle relative">
-        <div className="max-w-[1100px] mx-auto">
-          <div className="text-center mb-12">
-            <div className="badge badge-primary mb-3">Interactive Lab</div>
-            <h2 className="text-3xl sm:text-[2.5rem] font-black tracking-tighter">Visualize <span className="gradient-text">Physics</span></h2>
-            <p className="text-tx-muted mt-2 text-[0.9rem] font-bold uppercase tracking-widest opacity-70">Projectile Motion Lab</p>
-          </div>
-          <div className="grid md:grid-cols-[1.2fr_0.8fr] gap-10 items-center max-w-[1000px] mx-auto">
-            <div className="animate-fade-up">
-              <Simulation />
-            </div>
-            <div className="flex flex-col gap-6">
-              <div className="glass-panel nh border-l-4 border-l-pr p-8">
-                <p className="font-display text-[1rem] font-black mb-3 uppercase tracking-tight">💡 Scholarly Insight</p>
-                <p className="text-tx-muted text-[0.85rem] leading-[1.7] font-medium">
-                  Max range is achieved at <strong className="text-pr">45°</strong>. 
-                  Complementary angles like 30° and 60° yield identical ranges. 
-                  <span className="block mt-2 font-bold text-tx-dim">R = u²sin(2θ)/g</span>
+        {/* Simulation Preview Section */}
+        <section className="px-4 md:px-gutter py-24 bg-white/50 dark:bg-slate-900/50">
+          <div className="container-max mx-auto">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div className="order-2 lg:order-1">
+                <div className="flex items-center gap-2 mb-6">
+                   <div className="w-10 h-1 bg-pr rounded-full" />
+                   <span className="text-[0.65rem] font-black uppercase tracking-widest text-pr">Laboratory Engine v2</span>
+                </div>
+                <h2 className="font-h2 text-[2.5rem] md:text-[3rem] leading-tight mb-6 font-black tracking-tighter">Immersive Laboratory simulations</h2>
+                <p className="text-[1.1rem] text-slate-600 dark:text-slate-400 mb-8 leading-relaxed font-medium">
+                  Interact with complex concepts through our proprietary 3D engine. Visualize data patterns and academic theories in a space designed for total focus and zero distractions.
                 </p>
-              </div>
-              <div className="glass-panel nh border-l-4 border-l-sec p-8">
-                <p className="font-display text-[1rem] font-black mb-3 uppercase tracking-tight">📐 Essential Principles</p>
-                <div className="space-y-2 text-tx-muted font-mono text-[0.8rem] font-bold">
-                  <p className="flex justify-between"><span>Range:</span> <span className="text-sec">u²sin2θ/g</span></p>
-                  <p className="flex justify-between"><span>Max Height:</span> <span className="text-sec">u²sin²θ/2g</span></p>
-                  <p className="flex justify-between"><span>Time of Flight:</span> <span className="text-sec">2u sinθ/g</span></p>
+                <div className="space-y-5">
+                  {[
+                    "Real-time data visualization",
+                    "Collaborative sandbox environments",
+                    "Adaptive difficulty scaling"
+                  ].map((feature, i) => (
+                    <div key={i} className="flex items-center gap-4 group">
+                      <div className="w-6 h-6 rounded-full bg-pr/10 flex items-center justify-center text-pr">
+                        <div className="w-2 h-2 rounded-full bg-pr" />
+                      </div>
+                      <span className="font-black text-[0.85rem] uppercase tracking-wide group-hover:text-pr transition-colors">{feature}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <Link to="/simulations" className="btn-primary w-full h-[48px] justify-center">Explore All Sims →</Link>
+              <div className="order-1 lg:order-2">
+                <div className="relative glass-panel p-4 md:p-6 rounded-[32px] shadow-2xl bg-white/80 dark:bg-slate-900/80">
+                  <div className="rounded-[24px] overflow-hidden relative aspect-video bg-slate-950 shadow-inner group">
+                    <img 
+                      alt="Simulation Preview" 
+                      className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-1000" 
+                      src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2070&auto=format&fit=crop" 
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors">
+                      <div className="w-16 md:w-20 h-16 md:h-20 rounded-full glass-panel flex items-center justify-center text-white cursor-pointer hover:scale-110 transition-transform">
+                         <div className="w-0 h-0 border-t-[10px] md:border-t-[12px] border-t-transparent border-l-[18px] md:border-l-[22px] border-l-white border-b-[10px] md:border-b-[12px] border-b-transparent ml-2" />
+                      </div>
+                    </div>
+                  </div>
+                  {/* Floating Card Elements */}
+                  <div className="absolute -bottom-4 md:-bottom-10 -left-4 md:-left-10 glass-panel p-4 md:p-6 rounded-[24px] shadow-2xl w-40 md:w-56 bg-white dark:bg-slate-900 border-pr/10">
+                    <p className="text-[0.6rem] font-black tracking-widest text-pr uppercase mb-2">Active Users</p>
+                    <p className="text-[1.5rem] md:text-[2rem] font-black tabular-nums">12.4k <span className="text-[0.8rem] font-black text-emerald-500 ml-2">+12%</span></p>
+                  </div>
+                  <div className="absolute -top-6 -right-6 w-16 h-16 rounded-full glass-panel flex items-center justify-center shadow-xl border-sec/20 text-sec">
+                     <span className="text-[1.5rem]">⚡</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Path Section */}
-      <section className="py-24 px-6 sm:px-12 bg-surface-bg relative">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-[2.5rem] font-black tracking-tight uppercase">Your Learning <span className="gradient-text">Path</span></h2>
-            <div className="h-1.5 w-24 bg-pr/20 mx-auto mt-4 rounded-full" />
+        {/* How It Works Section */}
+        <section className="px-4 md:px-gutter py-32 bg-surface-container-low/50">
+          <div className="container-max mx-auto text-center mb-20">
+            <h2 className="font-h2 text-[2.5rem] md:text-[3.5rem] font-black tracking-tight mb-4">The Scholar Path</h2>
+            <p className="text-slate-600 dark:text-slate-400 max-w-xl mx-auto font-medium">Three phases of intellectual mastery designed to accelerate your growth.</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="container-max mx-auto grid md:grid-cols-3 gap-8">
             {[
-              { icon: '🎓', step: '1. Select Class', desc: 'Class 9–12 or Dropper track, each with tailored exam options.', bg: 'bg-pr/10', color: 'text-pr' },
-              { icon: '📋', step: '2. Pick Exam', desc: 'CBSE, JEE Main, JEE Advanced — choose your target.', bg: 'bg-sec/10', color: 'text-sec' },
-              { icon: '📚', step: '3. Choose Subject', desc: 'Physics, Chemistry, or Maths with full chapter lists.', bg: 'bg-emerald-500/10', color: 'text-emerald-500' },
-              { icon: '🏆', step: '4. Solve & Score', desc: 'MCQs with detailed solutions and real-time scoring.', bg: 'bg-acc/10', color: 'text-acc' }
-            ].map((path, i) => (
-              <motion.div 
-                key={i} 
-                whileHover={{ y: -10 }}
-                className="glass-panel text-center p-8 flex flex-col items-center"
-              >
-                <div className={`w-16 h-16 rounded-[22px] flex items-center justify-center text-3xl mb-6 shadow-lg shadow-black/5 ${path.bg}`}>{path.icon}</div>
-                <h3 className={`font-display text-[1.1rem] font-black mb-3 ${path.color}`}>{path.step}</h3>
-                <p className="text-tx-muted text-[0.8rem] leading-[1.6] font-medium">{path.desc}</p>
-              </motion.div>
+              { title: 'Ingest', icon: '📖', desc: 'Absorb curated knowledge from the world\'s leading academic institutions through our ethereal interface.', color: 'from-pr/20' },
+              { title: 'Synthesize', icon: '🔬', desc: 'Apply theories in high-stakes simulations that bridge the gap between theory and practical mastery.', color: 'from-sec/20' },
+              { title: 'Transcend', icon: '✨', desc: 'Join an elite community of scholars and contribute original research to the global knowledge base.', color: 'from-pr/20' }
+            ].map((step, i) => (
+              <div key={i} className="glass-panel p-10 rounded-[40px] text-center hover:-translate-y-4 transition-all duration-500 bg-white dark:bg-slate-900 border-white/40 group overflow-hidden relative">
+                <div className={`absolute inset-0 bg-gradient-to-br ${step.color} to-transparent opacity-0 group-hover:opacity-100 transition-opacity`} />
+                <div className="w-20 h-20 rounded-[28px] bg-surface-subtle dark:bg-slate-800 flex items-center justify-center mx-auto mb-8 text-4xl shadow-lg relative z-10 group-hover:scale-110 transition-transform">
+                  {step.icon}
+                </div>
+                <h3 className="text-2xl font-black mb-4 relative z-10">{step.title}</h3>
+                <p className="text-[0.95rem] text-slate-600 dark:text-slate-400 relative z-10 leading-relaxed font-medium">{step.desc}</p>
+              </div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      <footer className="footer border-t border-border-subtle py-12 text-center bg-surface-card">
-         <div className="max-w-[1200px] mx-auto px-6 flex flex-col items-center gap-4">
-            <p className="label-sm opacity-60">Cypher Scholar AI © 2026 — Helping JEE Aspirants Across India</p>
-            <div className="flex gap-6 mt-2">
-              <Link to="/about" className="text-[0.7rem] font-black uppercase tracking-widest text-tx-dim hover:text-pr">About</Link>
-              <Link to="/pricing" className="text-[0.7rem] font-black uppercase tracking-widest text-tx-dim hover:text-pr">Pricing</Link>
-              <Link to="/feedback" className="text-[0.7rem] font-black uppercase tracking-widest text-tx-dim hover:text-pr">Feedback</Link>
+        {/* Masterclasses Bento */}
+        <section className="px-4 md:px-gutter py-32">
+          <div className="container-max mx-auto">
+            <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+              <div>
+                <h2 className="font-h2 text-[2.5rem] md:text-[3.5rem] font-black tracking-tight leading-none mb-4">Featured Masterclasses</h2>
+                <p className="text-slate-600 dark:text-slate-400 font-medium">Curated modules for the modern polymath.</p>
+              </div>
+              <button className="text-pr font-black uppercase tracking-widest text-[0.8rem] flex items-center gap-3 group">
+                View All Catalog <span className="group-hover:translate-x-2 transition-transform">→</span>
+              </button>
             </div>
-         </div>
-      </footer>
+            
+            <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6 h-auto md:h-[800px]">
+              <div className="md:col-span-2 md:row-span-2 relative rounded-[40px] overflow-hidden group shadow-2xl">
+                <img 
+                  alt="Quantum" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" 
+                  src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2070&auto=format&fit=crop" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent p-10 flex flex-col justify-end">
+                  <div className="px-4 py-1.5 rounded-full bg-pr text-white text-[0.65rem] font-black uppercase tracking-widest w-fit mb-6">Advanced Track</div>
+                  <h3 className="text-white font-display text-[2.5rem] font-black leading-tight mb-4">Quantum Mechanics for Modern Systems</h3>
+                  <p className="text-white/70 max-w-md font-medium text-[1.1rem]">Explore the foundation of 21st-century computation with Nobel-prize winning mentors.</p>
+                </div>
+              </div>
+              
+              <div className="md:col-span-2 relative rounded-[40px] overflow-hidden group shadow-xl">
+                <img 
+                  alt="AI Ethics" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" 
+                  src="https://images.unsplash.com/photo-1620712943543-bcc4638ef808?q=80&w=2070&auto=format&fit=crop"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent p-8 flex flex-col justify-end">
+                  <h3 className="text-white font-display text-2xl font-black mb-2">The Ethics of Neural Networks</h3>
+                  <p className="text-white/70 font-medium">Philosophical foundations of intelligence.</p>
+                </div>
+              </div>
+              
+              <div className="relative rounded-[40px] overflow-hidden group shadow-xl h-[300px] md:h-auto">
+                <img 
+                  alt="Cryptography" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" 
+                  src="https://images.unsplash.com/photo-1558494949-ef010cbdcc48?q=80&w=2091&auto=format&fit=crop"
+                />
+                <div className="absolute inset-0 bg-slate-900/40 group-hover:bg-slate-900/20 transition-all flex items-end p-6">
+                  <h4 className="text-white font-black uppercase tracking-widest text-[0.8rem]">Cryptography III</h4>
+                </div>
+              </div>
+              
+              <div className="relative rounded-[40px] overflow-hidden group shadow-xl h-[300px] md:h-auto">
+                <img 
+                  alt="Data" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" 
+                  src="https://images.unsplash.com/photo-1551288049-bbbda5366391?q=80&w=2070&auto=format&fit=crop"
+                />
+                <div className="absolute inset-0 bg-slate-900/40 group-hover:bg-slate-900/20 transition-all flex items-end p-6">
+                  <h4 className="text-white font-black uppercase tracking-widest text-[0.8rem]">Data Architecture</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
     </motion.div>
   );
 };

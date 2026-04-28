@@ -19,10 +19,10 @@ const AdminDashboard: React.FC = () => {
   ];
 
   return (
-    <div className="flex min-h-[calc(100vh-58px)] bg-surface-bg dark:bg-slate-950 animate-fade-up">
+    <div className="flex min-h-[calc(100vh-80px)] bg-surface-bg dark:bg-slate-950 animate-fade-up">
       {/* Sidebar - Precision Control */}
-      <aside className="w-[280px] bg-white dark:bg-slate-900 border-r border-border-subtle py-8 shrink-0 hidden lg:flex flex-col">
-        <div className="px-6 mb-12">
+      <aside className="w-[280px] bg-white dark:bg-slate-900 border-r border-border-subtle shrink-0 hidden lg:flex flex-col h-[calc(100vh-80px)] sticky top-20">
+        <div className="px-6 py-8 mb-4">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pr to-sec p-[1px] shadow-lg shadow-pr/20">
                <div className="w-full h-full bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center text-[1rem] font-black">

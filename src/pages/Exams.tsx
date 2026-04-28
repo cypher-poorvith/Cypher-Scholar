@@ -134,7 +134,7 @@ const Exams: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-3">
           <div className="badge badge-primary">All Competitive Exams</div>
-          <h1 className="text-[3rem] font-black tracking-tighter leading-none">Exams <span className="gradient-text">Offered</span></h1>
+          <h1 className="text-[3rem] md:text-[6rem] lg:text-[7.5rem] font-black tracking-tighter leading-[0.85] text-3d uppercase">Competitive <span className="brand-text-gradient text-glow">Exams</span></h1>
           <p className="text-tx-muted text-[1rem] max-w-[600px]">Exhaustive question banks and mock tests for every major entrance exam in India. Precision-built for serious results.</p>
         </div>
         <div className="flex gap-4">
